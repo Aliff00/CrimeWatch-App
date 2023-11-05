@@ -3,8 +3,8 @@ MAD x PM group project
 
 Group Member Key Roles: -
 
-darwishz - Project Manager
-fatiha - Database Leaed
-ishida-san - Design Lead
-4peng - Development Lead
-iqbal - Test Lead
+darwishz - Project Manager\t
+fatiha - Database Leaed\t
+ishida-san - Design Lead\t
+4peng - Development Lead\t
+iqbal - Test Lead\t
