@@ -86,7 +86,7 @@ public class registerActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     userID = mAuth.getCurrentUser().getUid();
-                                    DocumentReference documentReference = fStore.collection("reports").document(userID);
+                                    DocumentReference documentReference = fStore.collection("users").document(userID);
                                     Map<String, Object> user = new HashMap<>();
                                     user.put("fullName",fullName);
                                     user.put("username",username);
@@ -99,6 +99,9 @@ public class registerActivity extends AppCompatActivity {
                                     progressBar.setVisibility(View.GONE);
                                     Toast.makeText(registerActivity.this, "Account created.",
                                             Toast.LENGTH_SHORT).show();
+                                    Intent intent2= new Intent(getApplicationContext(), MainActivity.class);
+                                    startActivity(intent2);
+                                    finish();
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     progressBar.setVisibility(View.GONE);

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 public class loginActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
-    ProgressBar progressBar;
+    ProgressBar progressBar2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +31,8 @@ public class loginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         //Declare user inputs
+        mAuth = FirebaseAuth.getInstance();
+        progressBar2 = findViewById(R.id.progressBar2);
         EditText editEmail = findViewById(R.id.emailPrompt);
         EditText editPassword = findViewById(R.id.passwordPrompt);
         Button signInButton = findViewById(R.id.signInButton);
@@ -48,7 +50,7 @@ public class loginActivity extends AppCompatActivity {
         signInButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                progressBar.setVisibility(View.VISIBLE);
+                progressBar2.setVisibility(View.VISIBLE);
                 String email, password;
                 email = editEmail.getText().toString();
                 password = editPassword.getText().toString();
@@ -67,9 +69,12 @@ public class loginActivity extends AppCompatActivity {
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.setVisibility(View.GONE);
+                                progressBar2.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
                                     Toast.makeText(loginActivity.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
+                                    Intent intent2= new Intent(getApplicationContext(), MainActivity.class);
+                                    startActivity(intent2);
+                                    finish();
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     Toast.makeText(loginActivity.this, "Authentication failed.",

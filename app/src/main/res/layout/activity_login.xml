@@ -115,6 +115,7 @@
         android:ems="14"
         android:inputType="text"
         android:text=""
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/displayEmailText" />
 
@@ -125,12 +126,13 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/custom_input"
-        android:ems="10"
+        android:ems="14"
+        android:textColor="@color/black"
         android:inputType="textPassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/displayPasswordText" />
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/progressBar2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone" />
