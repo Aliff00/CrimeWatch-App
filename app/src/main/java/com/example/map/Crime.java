@@ -5,7 +5,7 @@ public class Crime {
     private double longitude;
     private String crimeType;
 
-    public Crime(double latitude, double longitude, String CrimeType) {
+    public Crime(double latitude, double longitude, String crimeType) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.crimeType = crimeType;
@@ -21,5 +21,14 @@ public class Crime {
 
     public String getCrimeType() {
         return crimeType;
+    }
+
+    @Override
+    public String toString() {
+        return "Crime{" +
+                "latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", crimeType='" + crimeType + '\'' +
+                '}';
     }
 }

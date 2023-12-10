@@ -11,12 +11,17 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -30,6 +35,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.android.gms.tasks.Task;
@@ -48,7 +54,9 @@ import com.google.android.gms.common.api.Status;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback , GoogleMap.OnPoiClickListener {
 
@@ -59,10 +67,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final float DEFAULT_ZOOM = 15f;
     private Boolean mLocationPermissionsGranted = false;
     private FusedLocationProviderClient mfusedLocationProviderClient;
-    private EditText mSearchText;
     private static final String TAG = "MainActivity";
     private Toolbar toolbar;
-
+    private LinearLayout legendLayout;  // Add this line
+    private ImageButton legendButton;   // Add this line
     private List<Crime> crimeData = new ArrayList<>();
 
     @Override
@@ -76,13 +84,80 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Places.initialize(getApplicationContext(), "AIzaSyBBuX8J5JTjAMb11N1OEQizDix42NYf1VU");
 
-
-
-        // Add sample crime data
         crimeData.add(new Crime(37.4219999, -122.0840575, "Violent Crime"));
         crimeData.add(new Crime(37.422, -122.083, "Property Crime"));
 
         getLocationPermission();
+
+        // Initialize the legend
+        initLegend();
+
+        // Initialize the legend button
+        initLegendButton();  // Make sure to add this line
+
+    }
+    private void initLegend() {
+        // Reference to the legend layout
+        legendLayout = findViewById(R.id.legend_layout);
+
+        // Example data structure for your legend items
+        Map<String, Integer> legendItems = new HashMap<>();
+
+        // Dynamically add items to the legend
+        for (Map.Entry<String, Integer> item : legendItems.entrySet()) {
+            // Create a horizontal layout for each item
+            LinearLayout itemLayout = new LinearLayout(this);
+            itemLayout.setOrientation(LinearLayout.HORIZONTAL);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            itemLayout.setLayoutParams(layoutParams);
+
+            // Add icon
+            ImageView icon = new ImageView(this);
+            icon.setImageResource(item.getValue());
+            LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(
+                    convertDpToPx(24), // icon size in pixels
+                    convertDpToPx(24)
+            );
+            icon.setLayoutParams(iconParams);
+            itemLayout.addView(icon);
+
+            // Add description
+            TextView description = new TextView(this);
+            description.setText(item.getKey());
+            LinearLayout.LayoutParams descriptionParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            descriptionParams.setMargins(convertDpToPx(8), 0, 0, 0);
+            description.setLayoutParams(descriptionParams);
+            itemLayout.addView(description);
+
+            // Add the item layout to the legend layout
+            legendLayout.addView(itemLayout);
+        }
+    }
+
+    private void initLegendButton() {
+        ImageButton legendButton = findViewById(R.id.legendButton);
+
+        legendButton.setOnClickListener(view -> {
+            LinearLayout legendLayout = findViewById(R.id.legend_layout);
+
+            // Toggle legend visibility
+            if (legendLayout.getVisibility() == View.VISIBLE) {
+                legendLayout.setVisibility(View.GONE);
+            } else {
+                legendLayout.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    // Utility method to convert dp to pixels
+    private int convertDpToPx(int dp) {
+        return (int) (dp * getResources().getDisplayMetrics().density);
     }
 
     private void init() {
@@ -107,24 +182,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.e(TAG, "onError: AutocompletePrediction: " + status.getStatusMessage());
             }
         });
-    }
-
-    private void geoLocate() {
-        Log.d(TAG, "geoLocate: geolocating");
-
-        String searchString = mSearchText.getText().toString();
-        Geocoder geocoder = new Geocoder(MainActivity.this);
-        List<Address> list = new ArrayList<>();
-        try {
-            list = geocoder.getFromLocationName(searchString, 1);
-        } catch (IOException e) {
-            Log.e(TAG, "geoLocate: IOException: " + e.getMessage());
-        }
-        if (list.size() > 0) {
-            Address address = list.get(0);
-            Log.d(TAG, "geoLocate: found a location: " + address.toString());
-            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM, address.getAddressLine(0));
-        }
     }
 
     private void getDeviceLocation() {
@@ -172,14 +229,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private float getMarkerColor(String crimeType) {
+        Log.d(TAG, "getMarkerColor: Crime Type: " + crimeType);
         if ("Violent Crime".equals(crimeType)) {
+            Log.d(TAG, "getMarkerColor: Setting color to Red for Violent Crime");
             return BitmapDescriptorFactory.HUE_RED;
         } else if ("Property Crime".equals(crimeType)) {
+            Log.d(TAG, "getMarkerColor: Setting color to Blue for Property Crime");
             return BitmapDescriptorFactory.HUE_BLUE;
         }
-        // Add more cases as needed
-
-        return BitmapDescriptorFactory.HUE_GREEN;
+        Log.d(TAG, "getMarkerColor: Setting default color (Green)");
+        return BitmapDescriptorFactory.HUE_GREEN; // Default color
     }
 
     private void iniMap() {
@@ -224,11 +283,31 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.getUiSettings().setCompassEnabled(true);
 
 
-            // Add markers for each crime location
+            // Set custom info window adapter
+            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                @Nullable
+                @Override
+                public View getInfoContents(@NonNull Marker marker) {
+                    return null;
+                }
+
+                @Override
+                public View getInfoWindow(Marker marker) {
+                    View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_window, null); // Inflate your custom layout
+                    TextView title = infoWindow.findViewById(R.id.infoTitle);
+                    title.setText(marker.getTitle()); // Set the crime type as title
+                    // Add more information if needed
+                    return infoWindow;
+                }
+
+            });
+
             for (Crime crime : crimeData) {
+                Log.d(TAG, "Crime: " + crime.toString()); // This will print the details of each crime
                 LatLng crimeLocation = new LatLng(crime.getLatitude(), crime.getLongitude());
                 float markerColor = getMarkerColor(crime.getCrimeType());
 
+                Log.d(TAG, "Adding marker: " + crime.getCrimeType() + " with color: " + markerColor);
                 mMap.addMarker(new MarkerOptions()
                         .position(crimeLocation)
                         .title(crime.getCrimeType())

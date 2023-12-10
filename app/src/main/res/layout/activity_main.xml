@@ -5,6 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/autocomplete_fragment_container"
+        tools:context=".MainActivity" />
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -12,6 +20,18 @@
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:layout_alignParentTop="true"/>
+
+    <!-- ImageButton for Legend -->
+
+    <ImageButton
+        android:id="@+id/legendButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="78dp"
+        android:layout_marginEnd="353dp"
+        android:src="@android:drawable/ic_info" />
 
     <FrameLayout
         android:id="@+id/autocomplete_fragment_container"
@@ -31,44 +51,53 @@
             app:layout_constraintBottom_toTopOf="@id/map"/>
     </FrameLayout>
 
-<!--    <RelativeLayout-->
-<!--        android:id="@+id/relLayout1"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="50dp"-->
-<!--        android:layout_marginTop="10dp"-->
-<!--        android:layout_marginLeft="10dp"-->
-<!--        android:layout_marginRight="10dp"-->
-<!--        android:layout_below="@id/autocomplete_fragment_container"-->
-<!--        android:elevation="10dp">-->
+    <!-- Legend Layout -->
+    <LinearLayout
+        android:id="@+id/legend_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/toolbar"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="70dp"
+        android:padding="8dp"
+        android:background="#CCFFFFFF"
+        android:visibility="gone"> <!-- Semi-transparent background -->
 
-<!--        <ImageView-->
-<!--            android:id="@+id/ic_magnify"-->
-<!--            android:layout_width="15dp"-->
-<!--            android:layout_height="15dp"-->
-<!--            android:layout_centerVertical="true"-->
-<!--            android:layout_marginLeft="10dp"-->
-<!--            android:src="@drawable/ic_magnify" />-->
+        <!-- Repeat this block for each type of marker -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-<!--        <EditText-->
-<!--            android:id="@+id/Input_Search"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_toRightOf="@id/ic_magnify"-->
-<!--            android:background="@null"-->
-<!--            android:hint="Enter address, City or Zip Code"-->
-<!--            android:textColor="@color/black"-->
-<!--            android:textSize="15sp"-->
-<!--            android:imeOptions="actionSearch"-->
-<!--            android:singleLine="true"-->
-<!--            android:inputType="text"-->
-<!--            android:maxLines="1" />-->
-<!--    </RelativeLayout>-->
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_marker_violent_crime" /> <!-- Replace with your icon -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Violent Crime"
+                android:paddingLeft="4dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-    <fragment
-        android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_below="@id/autocomplete_fragment_container"
-        tools:context=".MainActivity"/>
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_marker_property_crime" /> <!-- Replace with your icon -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Property Crime"
+                android:paddingLeft="4dp"/>
+        </LinearLayout>
+
+        <!-- Add more blocks for other marker types -->
+    </LinearLayout>
+
 </RelativeLayout>
