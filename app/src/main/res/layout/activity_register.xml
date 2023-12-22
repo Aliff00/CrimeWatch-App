@@ -114,8 +114,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="40dp"
-        android:text="USERNAME"
+        android:text="IDENTITY NUMBER"
         android:textSize="14dp"
+        android:inputType="number"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editEmail" />

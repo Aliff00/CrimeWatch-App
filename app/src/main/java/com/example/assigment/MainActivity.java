@@ -1,58 +1,46 @@
 package com.example.assigment;
 
-import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final int GALLERY_REQ_CODE = 1000;
-    ImageView imgGallery;
+    FloatingActionButton fab;
+    DrawerLayout drawerLayout;
+    BottomNavigationView bottomNavigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        imgGallery = findViewById(R.id.imgGallery);
-        Button btnGallery = findViewById(R.id.btnGallery);
 
-        btnGallery.setOnClickListener(new View.OnClickListener() {
 
+
+        DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
+        findViewById(R.id.imageMenu).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent iGallery = new Intent(Intent.ACTION_PICK);
-                iGallery.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(iGallery,GALLERY_REQ_CODE);
+            public void onClick(View v) {
+                drawerLayout.openDrawer(GravityCompat.START);
             }
         });
-    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode ==RESULT_OK){
+        NavigationView navigationView = findViewById(R.id.navView);
+        navigationView.setItemIconTintList(null);
 
-            if(requestCode==GALLERY_REQ_CODE) {
-                //for Gallery
-                imgGallery.setImageURI(data.getData());
-            }
-        }
+        NavController navController = Navigation.findNavController(this,R.id.navHostFragment);
+        NavigationUI.setupWithNavController(navigationView,navController);
     }
 }

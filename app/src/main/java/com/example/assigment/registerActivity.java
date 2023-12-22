@@ -80,6 +80,7 @@ public class registerActivity extends AppCompatActivity {
                     return;
                 }
 
+
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
@@ -89,7 +90,7 @@ public class registerActivity extends AppCompatActivity {
                                     DocumentReference documentReference = fStore.collection("users").document(userID);
                                     Map<String, Object> user = new HashMap<>();
                                     user.put("fullName",fullName);
-                                    user.put("username",username);
+                                    user.put("NRIC",username);
                                     documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
@@ -99,7 +100,7 @@ public class registerActivity extends AppCompatActivity {
                                     progressBar.setVisibility(View.GONE);
                                     Toast.makeText(registerActivity.this, "Account created.",
                                             Toast.LENGTH_SHORT).show();
-                                    Intent intent2= new Intent(getApplicationContext(), MainActivity.class);
+                                    Intent intent2= new Intent(getApplicationContext(), UserReporting.class);
                                     startActivity(intent2);
                                     finish();
                                 } else {
