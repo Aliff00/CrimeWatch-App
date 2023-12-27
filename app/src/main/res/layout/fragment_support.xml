@@ -7,11 +7,24 @@
     tools:context=".SupportFragment">
 
     <!-- TODO: Update support fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
+    <Button
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="support"
-        android:layout_gravity="center"
-        android:textSize="50sp"/>
+        android:id="@+id/BtnFeed"
+        android:text="Feedboard"
+        android:layout_marginVertical="150dp"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/BtnTips"
+        android:text="Safety Tips"
+        android:layout_marginVertical="200dp"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/BtnEmergency"
+        android:text="Emergency Helpline"
+        android:layout_marginVertical="250dp"/>
 
 </FrameLayout>

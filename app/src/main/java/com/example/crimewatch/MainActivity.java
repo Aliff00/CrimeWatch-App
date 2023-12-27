@@ -1,10 +1,12 @@
 package com.example.crimewatch;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
@@ -37,7 +39,26 @@ public class MainActivity extends AppCompatActivity {
         // bind NavHostFragment with NavController ; NavController manage app nav in NavHost
         NavHostFragment host = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.NHFMain);
         NavController navController = host.getNavController();
-        setupBottomNavMenu(navController);
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav_view);
+        NavigationUI.setupWithNavController(bottomNav,navController);
+
+        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
+            @Override
+            public void onDestinationChanged(@NonNull NavController controller,
+                                             @NonNull NavDestination destination, @Nullable Bundle arguments) {
+                if(destination.getId() == R.id.SupportEmergency) {
+                    bottomNav.setVisibility(View.GONE);
+                    bottomNav.setVisibility(View.GONE);
+                    fab.setVisibility(View.GONE);
+                } else {
+                    bottomNav.setVisibility(View.VISIBLE);
+                    bottomNav.setVisibility(View.VISIBLE);
+                    fab.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+
 
         // sending notification alert (alertdialog)
         // check nearby crimes - needs report and maps
@@ -48,12 +69,6 @@ public class MainActivity extends AppCompatActivity {
         } else{
             showRedZone();
         }
-    }
-
-    // set up bottomnav with navcontroller
-    private void setupBottomNavMenu(NavController navController){
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav_view);
-        NavigationUI.setupWithNavController(bottomNav,navController);
     }
 
     //notification alert method

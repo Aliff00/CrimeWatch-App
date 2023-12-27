@@ -24,11 +24,22 @@
         android:id="@+id/DestSupport"
         android:name="com.example.crimewatch.SupportFragment"
         android:label="fragment_support"
-        tools:layout="@layout/fragment_support" />
+        tools:layout="@layout/fragment_support" >
+        <action
+            android:id="@+id/action_DestSupport_to_SupportEmergency"
+            app:destination="@id/SupportEmergency"
+            app:popUpTo="@id/DestSupport"
+            app:popUpToInclusive="true"/>
+    </fragment>
     <fragment
         android:id="@+id/DestMy"
         android:name="com.example.crimewatch.MyFragment"
         android:label="fragment_my"
         tools:layout="@layout/fragment_my" />
+    <fragment
+        android:id="@+id/SupportEmergency"
+        android:name="com.example.crimewatch.EmergencyFragment"
+        android:label="Emergency Hotline"
+        tools:layout="@layout/fragment_emergency"/>
 
 </navigation>
