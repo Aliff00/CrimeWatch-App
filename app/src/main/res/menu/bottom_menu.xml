@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/DestHome"
+        android:icon="@drawable/baseline_home_24"
+        android:title="Home"/>
+
+    <item
+        android:id="@+id/DestMaps"
+        android:icon="@drawable/baseline_map_24"
+        android:title="Maps"/>
+
+    <item
+        android:id="@+id/DestReport"
+        android:title="Report"
+        android:enabled="false"/>
+
+    <item
+        android:id="@+id/DestSupport"
+        android:icon="@drawable/baseline_support_agent_24"
+        android:title="Support"/>
+
+    <item
+        android:id="@+id/DestMy"
+        android:icon="@drawable/baseline_person_24"
+        android:title="My"/>
+
+</menu>
