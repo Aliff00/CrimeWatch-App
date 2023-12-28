@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.auth.User;
 
 import java.util.ArrayList;
 
@@ -72,7 +73,7 @@ public class loginActivity extends AppCompatActivity {
                                 progressBar2.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
                                     Toast.makeText(loginActivity.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
-                                    Intent intent2= new Intent(getApplicationContext(), MainActivity.class);
+                                    Intent intent2= new Intent(getApplicationContext(), TestingReport.class);
                                     startActivity(intent2);
                                     finish();
                                 } else {

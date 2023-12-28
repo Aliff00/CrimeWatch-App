@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ETDate"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".UserReporting">
@@ -63,82 +64,52 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/TVDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="8dp"
-        android:text="Date:"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/view"
-        app:layout_constraintTop_toTopOf="@+id/ETDate" />
-
-    <EditText
-        android:id="@+id/ETDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:ems="10"
-        android:inputType="date"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        android:hint="DD/MM/YYYY"
-        app:layout_constraintStart_toEndOf="@+id/TVDate"
-        app:layout_constraintTop_toTopOf="@+id/view" />
-
-    <TextView
         android:id="@+id/TVTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
         android:text="Time:"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/view2"
-        app:layout_constraintTop_toTopOf="@+id/ETTime" />
+        app:layout_constraintTop_toTopOf="@+id/view2" />
 
-    <EditText
+    <TextView
         android:id="@+id/ETTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:ems="10"
-        android:inputType="time"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:text="set time"
+        android:clickable="true"
         android:textColor="#FFFFFF"
-        android:hint="HH:MM"
         android:textColorHint="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/TVTime"
         app:layout_constraintTop_toTopOf="@+id/view2" />
 
-    <EditText
+    <Button
         android:id="@+id/ETLocation"
-        android:layout_width="337dp"
-        android:layout_height="108dp"
-        android:layout_marginTop="6dp"
+        android:layout_width="250dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="32dp"
         android:ems="10"
-        android:hint="Describe or pin the location"
+        android:hint="pin location"
         android:inputType="text"
         android:textColorHint="#80FFFFFF"
         android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/view3"
+        app:layout_constraintStart_toEndOf="@+id/TVLocation"
         app:layout_constraintTop_toTopOf="@+id/view3" />
 
     <TextView
         android:id="@+id/TVLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text="Location:"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/ETLocation"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/ETLocation"
-        app:layout_constraintTop_toTopOf="@+id/ETLocation" />
+        app:layout_constraintStart_toStartOf="@+id/view3"
+        app:layout_constraintTop_toTopOf="@+id/view3" />
 
     <EditText
         android:id="@+id/ETDescription"
@@ -184,5 +155,38 @@
         android:text="Log out"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/ETDate2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:text="Date"
+        app:layout_constraintStart_toStartOf="@+id/view"
+        app:layout_constraintTop_toTopOf="@+id/view" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="66dp"
+        tools:layout_editor_absoluteY="618dp"
+        android:visibility="invisible"
+        android:id="@+id/frame_layout">
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/exitMapButton"
+            android:text="exit map"/>
+    </FrameLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
