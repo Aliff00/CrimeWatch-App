@@ -1,5 +1,7 @@
 package com.example.assigment;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -15,6 +17,7 @@ import android.widget.Button;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,6 +69,8 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
     }
 
 
@@ -73,7 +78,29 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        fab = view.findViewById(R.id.fab);
+        SharedPreferences preferences = getActivity().getSharedPreferences("myPrefs", 0);
+        boolean isLoggedIn = FirebaseAuth.getInstance().getCurrentUser() != null;
+        boolean rememberMeChecked = preferences.getBoolean("rememberMe", false);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent;
+                if (isLoggedIn && rememberMeChecked) {
+                    intent = new Intent(getActivity(), loginActivity.class);
+                } else {
+                    // Perform the default FAB action (e.g., start UserReporting activity)
+                    intent = new Intent(getActivity(), UserReporting.class);
+                }
+                startActivity(intent);
+            }
+        });
+
+
+        return view;
     }
+
+
 }

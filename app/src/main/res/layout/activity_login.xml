@@ -136,4 +136,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone" />
+
+    <CheckBox
+        android:id="@+id/checkRemember"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="Remember Me"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordPrompt" />
 </androidx.constraintlayout.widget.ConstraintLayout>

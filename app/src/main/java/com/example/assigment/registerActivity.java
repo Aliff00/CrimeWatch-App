@@ -100,7 +100,7 @@ public class registerActivity extends AppCompatActivity {
                                     progressBar.setVisibility(View.GONE);
                                     Toast.makeText(registerActivity.this, "Account created.",
                                             Toast.LENGTH_SHORT).show();
-                                    Intent intent2= new Intent(getApplicationContext(), UserReporting.class);
+                                    Intent intent2= new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent2);
                                     finish();
                                 } else {

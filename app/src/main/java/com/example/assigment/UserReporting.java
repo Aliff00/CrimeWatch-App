@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -119,7 +120,14 @@ public class UserReporting extends AppCompatActivity implements DatePickerFragme
         logoutbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Clear saved credentials
+                SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+                preferences.edit().clear().apply();
+
+                // Sign out from Firebase
                 FirebaseAuth.getInstance().signOut();
+
+                // Navigate to login activity
                 Intent intent = new Intent(getApplicationContext(), loginActivity.class);
                 startActivity(intent);
                 finish();
@@ -133,6 +141,7 @@ public class UserReporting extends AppCompatActivity implements DatePickerFragme
                 String timeString = timeTextView.getText().toString();
                 String location = ETLocation.getText().toString();
                 String desc = ETDescription.getText().toString();
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
 
                 try {
@@ -151,6 +160,7 @@ public class UserReporting extends AppCompatActivity implements DatePickerFragme
 
                     // Create report map with Timestamp, location, and desc
                     Map<String, Object> report = new HashMap<>();
+                    report.put("user", currentUser.getUid());
                     report.put("timestamp", timestamp);
                     report.put("location", location);
                     report.put("desc", desc);
