@@ -1,4 +1,4 @@
-package com.example.assigment;
+package com.example.crimewatch;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;

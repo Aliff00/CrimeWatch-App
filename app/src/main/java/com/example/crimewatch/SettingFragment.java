@@ -1,4 +1,4 @@
-package com.example.assigment;
+package com.example.crimewatch;
 
 import android.content.Intent;
 import android.net.Uri;

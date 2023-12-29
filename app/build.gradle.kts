@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.assigment"
+    namespace = "com.example.crimewatch"
     compileSdk = 34
 
     defaultConfig {
