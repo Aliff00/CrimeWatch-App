@@ -17,6 +17,12 @@
         android:theme="@style/Theme.Material3.Dark.NoActionBar"
         tools:targetApi="31">
         <activity
+            android:name=".StatusUpdate"
+            android:exported="false" />
+        <activity
+            android:name=".ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
             android:name=".TestingReport"
             android:exported="false" />
         <activity

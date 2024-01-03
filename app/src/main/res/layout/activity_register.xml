@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+
+    xmlns:tools="http://schemas.android.com/tools"
+
+
+    android:layout_width="match_parent"
+
+
+    android:layout_height="match_parent">
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".registerActivity">
 
     <EditText
@@ -13,6 +28,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/custom_input"
+        android:fontFamily="@font/inter1"
         android:ems="14"
         android:inputType="textPassword"
         android:textColor="@color/black"
@@ -27,6 +43,7 @@
         android:layout_marginTop="32dp"
         android:text="Register your account"
         android:textSize="24dp"
+        android:fontFamily="@font/inter1"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -37,6 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:clickable="true"
+        android:fontFamily="@font/inter1"
         android:text="Sign in"
         android:textColor="#17d6d6"
         app:layout_constraintStart_toEndOf="@+id/displayAlreadyhaveaccount"
@@ -45,11 +63,10 @@
     <TextView
         android:id="@+id/displayConfirmPassword"
         android:layout_width="wrap_content"
+        android:fontFamily="@font/inter1"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="40dp"
-
-
         android:text="CONFIRM PASSWORD"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,19 +77,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:fontFamily="@font/inter1"
         android:text="Already have an account?"
-
-
         android:textColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@+id/registerButton"
-        tools:layout_editor_absoluteX="66dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/registerButton" />
 
     <TextView
         android:id="@+id/displayEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
-
+        android:fontFamily="@font/inter1"
         android:layout_marginStart="20dp"
         android:layout_marginTop="40dp"
         android:text="EMAIL ADDRESS"
@@ -86,8 +102,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-
-
+        android:fontFamily="@font/inter1"
         android:layout_marginTop="40dp"
         android:text="PASSWORD"
         android:textColor="@color/white"
@@ -100,8 +115,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-
-
+            android:fontFamily="@font/inter1"
         android:layout_marginTop="40dp"
         android:text="FULL NAME"
         android:textColor="@color/white"
@@ -116,7 +130,7 @@
         android:layout_marginTop="40dp"
         android:text="IDENTITY NUMBER"
         android:textSize="14dp"
-        android:inputType="number"
+        android:fontFamily="@font/inter1"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editEmail" />
@@ -128,6 +142,7 @@
         android:layout_marginStart="20dp"
         android:textColor="@color/black"
         android:layout_marginTop="10dp"
+        android:fontFamily="@font/inter1"
         android:background="@drawable/custom_input"
         android:ems="14"
         android:inputType="textPassword"
@@ -143,6 +158,7 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/custom_input"
         android:ems="14"
+        android:fontFamily="@font/inter1"
         android:inputType="text"
         android:text=""
         app:layout_constraintStart_toStartOf="parent"
@@ -156,6 +172,7 @@
         android:layout_marginTop="40dp"
         android:layout_marginEnd="155dp"
         android:text="Register"
+        android:fontFamily="@font/inter1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -176,6 +193,7 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/custom_input"
         android:ems="14"
+        android:fontFamily="@font/inter1"
         android:inputType="text"
         android:text=""
         app:layout_constraintStart_toStartOf="parent"
@@ -190,8 +208,12 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/custom_input"
         android:ems="14"
+        android:fontFamily="@font/inter1"
         android:inputType="text"
         android:text=""
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/displayUsername" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

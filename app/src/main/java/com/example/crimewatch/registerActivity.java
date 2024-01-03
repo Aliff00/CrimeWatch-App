@@ -29,7 +29,7 @@ import java.util.Map;
 public class registerActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
-    TextView editTextEmail, editTextPassword, singInText, editFullName, editUsername;
+    TextView editTextEmail, editTextPassword, singInText, editFullName, editNRIC, editConfirmPassword;
     ProgressBar progressBar;
     FirebaseFirestore fStore;
     String userID;
@@ -43,7 +43,8 @@ public class registerActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         singInText = findViewById(R.id.signInText);
         editFullName = findViewById(R.id.editFullName);
-        editUsername = findViewById(R.id.editUsername);
+        editNRIC = findViewById(R.id.editUsername);
+        editConfirmPassword = findViewById(R.id.editConfirmPassword);
         singInText.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -58,11 +59,12 @@ public class registerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
-                String email , password, fullName, username;
+                String email , password, fullName, nric, conPass;
                 email = editTextEmail.getText().toString();
                 password = editTextPassword.getText().toString();
                 fullName = editFullName.getText().toString();
-                username = editUsername.getText().toString();
+                nric = editNRIC.getText().toString();
+                conPass = editConfirmPassword.getText().toString();
                 mAuth = FirebaseAuth.getInstance();
                 fStore = FirebaseFirestore.getInstance();
 
@@ -76,6 +78,22 @@ public class registerActivity extends AppCompatActivity {
                     return;
                 }
 
+                if (nric.length() != 12 || !TextUtils.isDigitsOnly(nric)) {
+                    Toast.makeText(registerActivity.this, "Please enter a valid 12-digit NRIC.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$";
+
+                if (password.length() < 8 || !password.matches(PASSWORD_REGEX)) {
+                    Toast.makeText(registerActivity.this, "Strong password required: 8+ chars, mix case & numbers.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (!password.equals(conPass)){
+                    Toast.makeText(registerActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -86,7 +104,7 @@ public class registerActivity extends AppCompatActivity {
                                     DocumentReference documentReference = fStore.collection("users").document(userID);
                                     Map<String, Object> user = new HashMap<>();
                                     user.put("fullName",fullName);
-                                    user.put("NRIC",username);
+                                    user.put("NRIC",nric);
                                     documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
