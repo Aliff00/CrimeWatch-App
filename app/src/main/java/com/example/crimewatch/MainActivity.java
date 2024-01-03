@@ -1,27 +1,42 @@
 package com.example.crimewatch;
 
+import static androidx.constraintlayout.widget.ConstraintLayoutStates.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class MainActivity extends AppCompatActivity {
 
     private FloatingActionButton fab;
+    private static final String TAG = "FirestoreListener";
+    private FirebaseFirestore db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,25 +73,59 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
         // sending notification alert (alertdialog)
-        // check nearby crimes - needs report and maps
-        boolean crimesNearby = true;
 
-        if(crimesNearby){
-            showGreenZone();
-        } else{
-            showRedZone();
-        }
+        db = FirebaseFirestore.getInstance();
+
+        CollectionReference collectionReference = db.collection("report");
+
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(error!=null){
+                    Log.w(TAG, "Listen failed.", error);
+                    return;
+                }
+
+                if (value != null && !value.isEmpty()) {
+                    for (DocumentChange dc : value.getDocumentChanges()) {
+                        if (dc.getType() == DocumentChange.Type.ADDED) {
+                            // Logic to handle the new document added
+                            System.out.println("New document added with ID: " + dc.getDocument().getId());
+                            System.out.println("Document data: " + dc.getDocument().getData());
+                            // You can perform actions like showing an alert dialog here
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                            builder.setCancelable(true);
+                            builder.setTitle("Watch out ! New crimes reported.");
+                            builder.setMessage((CharSequence) dc.getDocument().getData()); // get data
+                            builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+                            builder.setPositiveButton("View", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    // go to maps
+                                }
+                            });
+                            builder.show();
+                        }
+                    }
+                } else {
+                    System.out.println("No new documents in the collection.");
+                }
+            }
+        });
     }
 
-    //notification alert method
     private void showGreenZone() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
-        builder.setTitle("You are in Green Zone.");
-        builder.setMessage("0 crimes reported within 1km radius. Stay Safe.");
+        builder.setTitle("Watch out ! New crimes reported.");
+        builder.setMessage("Location : Bangsar, KL"); // get location?
         builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -86,27 +135,8 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("View", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss(); // go to map
-            }
-        });
-        builder.show();
-    }
-    private void showRedZone() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setTitle("You are in Red Zone.");
-        builder.setMessage("20 crimes reported within 1km radius. Be Careful.");
-        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        builder.setPositiveButton("View", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(getApplicationContext(), MapsFragment.class);
-                startActivity(intent);
+                dialog.dismiss();
+                // go to maps
             }
         });
         builder.show();
