@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="true" />
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -10,20 +14,20 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/emojione_bw_1f989"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/emojione_bw_1f989"
         android:supportsRtl="true"
         android:theme="@style/Theme.Material3.Dark.NoActionBar"
         tools:targetApi="31">
+        <activity
+            android:name=".historyArchive"
+            android:exported="false" />
         <activity
             android:name=".StatusUpdate"
             android:exported="false" />
         <activity
             android:name=".ForgotPasswordActivity"
-            android:exported="false" />
-        <activity
-            android:name=".TestingReport"
             android:exported="false" />
         <activity
             android:name=".UserReporting"
@@ -49,6 +53,10 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBBuX8J5JTjAMb11N1OEQizDix42NYf1VU" />
+        <activity
+            android:name=".MapFragment"
+            android:exported="true"/>
     </application>
 
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
 </manifest>

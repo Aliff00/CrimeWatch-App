@@ -1,14 +1,13 @@
 package com.example.crimewatch;
 
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,7 +30,7 @@ public class StatusUpdate extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_status_update);
+        setContentView(R.layout.activity_status_update); // Using updated XML with RecyclerView
 
         // Initialize RecyclerView
         recyclerView = findViewById(R.id.recyclerView);
@@ -40,6 +39,7 @@ public class StatusUpdate extends AppCompatActivity {
         // Fetch reports
         fetchReports();
     }
+
 
     private void fetchReports() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -61,7 +61,7 @@ public class StatusUpdate extends AppCompatActivity {
                             }
 
                             // Set adapter for RecyclerView
-                            ArchiveAdapter adapter = new ArchiveAdapter(reports);
+                            ReportAdapter adapter = new ReportAdapter(StatusUpdate.this, reports);
                             recyclerView.setAdapter(adapter);
                         }
                     })

@@ -1,69 +1,87 @@
 package com.example.crimewatch;
 
-
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.example.crimewatch.Report; // Adjust import path if needed
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
-public class ReportAdapter extends ArrayAdapter<Report> {
+public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder> {
 
-    private Context context;
     private List<Report> reports;
+    private Context context;
 
     public ReportAdapter(Context context, List<Report> reports) {
-        super(context, 0, reports);
         this.context = context;
         this.reports = reports;
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.report_item, parent, false);
-        }
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.cardview_archive_item, parent, false);
+        return new ViewHolder(view);
+    }
 
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Report report = reports.get(position);
 
-        TextView timestampTextView = convertView.findViewById(R.id.timestampTextView);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // Example format
+        TextView timestampTextView = holder.timestampTextView;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formattedTimestamp = sdf.format(report.getTimestamp().toDate());
         timestampTextView.setText(formattedTimestamp);
-
-        // Format and display location if needed (e.g., using a library or custom logic)
-        TextView locationTextView = convertView.findViewById(R.id.locationTextView);
-        // ... inside your ReportAdapter's getView method
-        Geocoder geocoder = new Geocoder(context);
+        TextView descTextView = holder.descTextView;
+        descTextView.setText(report.getDesc());
+        // Format and display location
+        TextView locationTextView = holder.locationTextView;
         try {
+            Geocoder geocoder = new Geocoder(context, Locale.getDefault()); // Use device's locale
             List<Address> addresses = geocoder.getFromLocation(report.getLocation().getLatitude(), report.getLocation().getLongitude(), 1);
             if (addresses.size() > 0) {
                 Address address = addresses.get(0);
-                // Use address.getLocality() for city, address.getThoroughfare() for street, etc.
                 String locationName = address.getLocality() + ", " + address.getCountryName();
                 locationTextView.setText(locationName);
             } else {
-                // Handle cases where no address is found (e.g., use approximate coordinates or display a generic message)
+                Log.d("ReportAdapter", "Geocoder returned no addresses"); // Log for debugging
+                locationTextView.setText("Unknown Location");
             }
         } catch (IOException e) {
-            // Handle errors
+            Log.e("ReportAdapter", "Error retrieving location: " + e.getMessage()); // Log for debugging
+            locationTextView.setText("Error retrieving location");
         }
+    }
 
-        TextView descTextView = convertView.findViewById(R.id.descTextView);
-        descTextView.setText(report.getDesc());
+    @Override
+    public int getItemCount() {
+        return reports.size();
+    }
 
-        TextView userIdTextView = convertView.findViewById(R.id.userIdTextView);
-        userIdTextView.setText(report.getUserId());
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView timestampTextView, locationTextView, descTextView, userIdTextView;
 
-        return convertView;
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            timestampTextView = itemView.findViewById(R.id.TVReportTime);
+            locationTextView = itemView.findViewById(R.id.TVReportLocation);
+            descTextView = itemView.findViewById(R.id.TVReportTitle);
+//            userIdTextView = itemView.findViewById(R.id.userIdTextView);
+//            TextView textViewReportTitle,textViewReportDate,textViewReportTime,textViewReportLocation;
+//            textViewReportTitle = itemView.findViewById(R.id.TVReportTitle);
+//            textViewReportDate = itemView.findViewById(R.id.TVReportDate);
+//            textViewReportTime = itemView.findViewById(R.id.TVReportTime);
+//            textViewReportLocation = itemView.findViewById(R.id.TVReportLocation);
+        }
     }
 }

@@ -5,20 +5,10 @@ import com.google.firebase.firestore.GeoPoint;
 
 public class Report {
 
-    private String id;
     private Timestamp timestamp;
     private GeoPoint location;
     private String desc;
     private String userId;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public Timestamp getTimestamp() {
         return timestamp;
     }

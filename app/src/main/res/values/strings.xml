@@ -4,4 +4,12 @@
     <string name="profile">Profile</string>
     <string name="map">AIzaSyBBuX8J5JTjAMb11N1OEQizDix42NYf1VU</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="open_nav">Open Navigation Drawer</string>
+    <string name="close_nav">Close Navigation Drawer</string>
+    <string name="OSCC">The One Stop Crisis Center (OSCC) service is an integrated and comprehensive multiagency service center established in all Emergency and Trauma Departments (ETD) of the Ministry Of Health for the management of survivors of domestic violence, sexual assault, child abuse and neglect. The survivors are seen at the center where all agencies converge to manage them.</string>
+    <string name="AWAM">AWAM provides training to raise awareness about issues relating to violence against women, advocacy for improved legislation and policies for women, and counseling services and legal information for women facing discrimination or violence</string>
+    <string name="BF">Befrienders offers free and confidential emotional support to anyone feeling distressed, depressed or suicidal. It a safe space where you can talk about anything that is troubling you while remaining anonymous. We also conduct awareness programs on topics such as suicide prevention and mental health</string>
+    <string name="HAWA">The Malaysian Mental Health Association (MMHA) is a non-profit Non-Government Organisation registered under the Societies Act 1966 MMHA is managed by an elected committee of interested persons and professionals in the community, including caregivers of persons living with mental disorders.</string>
+    <string name="NUR"> Talian Nur is the hotline link to enable early intervention for victims of domestic violence, child abuse, and natural disasters and this is powered by Juris Contact.</string>
+    <string name="WAO">Womens Aid Organisation (WAO) is a Malaysian NGO that provides free shelter, counselling, and crisis support to women and children who experience abuse.</string>
 </resources>

@@ -1,8 +1,5 @@
 package com.example.crimewatch;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,6 +12,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -23,14 +23,14 @@ import com.google.firebase.auth.FirebaseAuth;
 public class loginActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     ProgressBar progressBar2;
-    SharedPreferences preferences;
+    private SharedPreferences preferences;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
         //Declare user inputs
         mAuth = FirebaseAuth.getInstance();
         progressBar2 = findViewById(R.id.progressBar2);
@@ -95,7 +95,7 @@ public class loginActivity extends AppCompatActivity {
                         progressBar2.setVisibility(View.GONE);
                         if (task.isSuccessful()) {
                             Toast.makeText(loginActivity.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
-                            Intent intent2 = new Intent(getApplicationContext(), StatusUpdate.class);
+                            Intent intent2 = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent2);
                             finish();
 
@@ -115,5 +115,9 @@ public class loginActivity extends AppCompatActivity {
                 });
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        preferences = null; // Clear the reference when the activity is destroyed
+    }
 }

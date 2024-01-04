@@ -1,19 +1,11 @@
 package com.example.crimewatch;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
+import androidx.fragment.app.Fragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,50 +45,19 @@ public class HomeFragment extends Fragment {
         return fragment;
     }
 
-    FloatingActionButton fab;
-    DrawerLayout drawerLayout;
-    BottomNavigationView bottomNavigationView;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
-        fab = view.findViewById(R.id.fab);
-        SharedPreferences preferences = getActivity().getSharedPreferences("myPrefs", 0);
-        boolean isLoggedIn = FirebaseAuth.getInstance().getCurrentUser() != null;
-        boolean rememberMeChecked = preferences.getBoolean("rememberMe", false);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent;
-                if (isLoggedIn && rememberMeChecked) {
-                    intent = new Intent(getActivity(), loginActivity.class);
-                } else {
-                    // Perform the default FAB action (e.g., start UserReporting activity)
-                    intent = new Intent(getActivity(), UserReporting.class);
-                }
-                startActivity(intent);
-            }
-        });
-
-
-        return view;
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_home, container, false);
     }
-
-
 }

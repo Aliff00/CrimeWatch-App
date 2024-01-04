@@ -3,12 +3,12 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/dialog">
+    android:background="@drawable/dialogbg">
 
     <ImageView
         android:layout_width="70dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/baseline_remove_24"
+
         android:layout_gravity="center|top"
         android:scaleType="centerCrop"/>
 
@@ -22,13 +22,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="viewStart"
-            android:text="untuk mapping"
+            android:text="Create"
             android:padding="8dp"
             android:textColor="@color/colorPrimary"
             android:layout_marginStart="12dp"
             android:layout_marginTop="5dp"
             android:textSize="25dp" />
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginLeft="250dp"
+            android:layout_marginTop="8dp"
+            android:id="@+id/cancelButton"/>
 
     </LinearLayout>
 
@@ -41,6 +48,18 @@
         android:layout_marginTop="10dp"
         android:padding="10dp">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Upload a video"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginLeft="30dp"
+            android:textSize="16sp"/>
 
     </LinearLayout>
 
@@ -52,7 +71,18 @@
         android:padding="10dp">
 
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create a short"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginLeft="30dp"
+            android:textSize="16sp"/>
 
     </LinearLayout>
 
@@ -67,8 +97,18 @@
         android:paddingBottom="30dp">
 
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
 
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Go live"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginLeft="30dp"
+            android:textSize="16sp"/>
 
     </LinearLayout>
 
