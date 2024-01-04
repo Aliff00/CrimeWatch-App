@@ -1,20 +1,16 @@
 package com.example.map;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -39,18 +35,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PointOfInterest;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-import com.google.android.libraries.places.api.model.RectangularBounds;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.gms.common.api.Status;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 //import com.google.android.libraries.places.widget.model.AutocompletePrediction;
 
 import org.json.JSONException;
@@ -72,7 +68,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback , GoogleMap.OnPoiClickListener {
+public class MapFragment extends AppCompatActivity implements OnMapReadyCallback , GoogleMap.OnPoiClickListener {
 
     private GoogleMap mMap;
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -84,15 +80,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String TAG = "MainActivity";
     private Toolbar toolbar;
     private LinearLayout legendLayout;  // Add this line
-    private ImageButton legendButton;   // Add this line
     private List<Crime> crimeData = new ArrayList<>();
     private double currentLat = 0;
     private double currentLng = 0;
-
+    private FirebaseFirestore db;
+    private boolean isShowingNearbyPlaces = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.fragment_map);
+        FirebaseApp.initializeApp(this);
 
         // Initialize Toolbar
         toolbar = findViewById(R.id.toolbar);
@@ -110,6 +107,35 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Initialize the legend button
         initLegendButton();  // Make sure to add this line
+        db = FirebaseFirestore.getInstance();
+
+        // Reference to the "report" collection
+        CollectionReference reportCollectionRef = db.collection("report");
+
+// Fetch all documents from the "report" collection
+        reportCollectionRef.get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        // Convert each document to a Report object
+
+                        Report report = document.toObject(Report.class);
+
+                        // Access the fields of the Report object
+                        String desc = report.getDesc();
+                        GeoPoint location = report.getLocation();
+                        Timestamp timestamp = report.getTimestamp();
+                        String user = report.getUser();
+                        Log.d(TAG, "desc: " + desc);
+                        Log.d(TAG, "location " + location.toString());
+                        Log.d(TAG, "timestamp: " + timestamp.toString());
+                        Log.d(TAG, "user: " + user);
+                        // Use the data as needed
+                        // For example, you can update UI or perform other operations
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.d(TAG, "Error: " + e.getMessage());
+                });
 
         ImageButton specificButton = findViewById(R.id.btnPolice); // Replace with your button's ID
         specificButton.setOnClickListener(v -> onSpecificButtonClicked());
@@ -227,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         moveCamera(new LatLng(currentLat, currentLng), DEFAULT_ZOOM, "My Location");
                     } else {
                         Log.d(TAG, "onComplete: current location is null");
-                        Toast.makeText(MainActivity.this, "Unable to get current location", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MapFragment.this, "Unable to get current location", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -304,7 +330,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.getUiSettings().setZoomControlsEnabled(true);
             mMap.getUiSettings().setCompassEnabled(true);
 
-
+            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(@NonNull Marker marker) {
+                    marker.showInfoWindow();
+                    return true;
+                }
+            });
             // Set custom info window adapter
             mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                 @Nullable
@@ -315,13 +347,34 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 @Override
                 public View getInfoWindow(Marker marker) {
+                    LatLng destinationLatLng = marker.getPosition();
                     View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_window, null); // Inflate your custom layout
                     TextView title = infoWindow.findViewById(R.id.infoTitle);
+                    TextView lat = infoWindow.findViewById(R.id.Loclat);
+                    TextView Long = infoWindow.findViewById(R.id.LocLong);
+
                     title.setText(marker.getTitle()); // Set the crime type as title
+                    lat.setText(Double.toString(destinationLatLng.latitude));
+                    Long.setText(Double.toString(destinationLatLng.longitude));
+
                     // Add more information if needed
                     return infoWindow;
                 }
 
+            });
+            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(@NonNull Marker marker) {
+                    LatLng destinationLatLng = marker.getPosition();
+
+                    // Start Google Maps intent for directions
+                    Intent intent = new Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("http://maps.google.com/maps?daddr=" + destinationLatLng.latitude + "," + destinationLatLng.longitude)
+                    );
+                    intent.setPackage("com.google.android.apps.maps");
+                    startActivity(intent);
+                }
             });
 
             for (Crime crime : crimeData) {
@@ -366,45 +419,45 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.mapNone) {
-            setMapTypeWithDelay(GoogleMap.MAP_TYPE_NONE);
-        } else if (id == R.id.mapNormal) {
-            setMapTypeWithDelay(GoogleMap.MAP_TYPE_NORMAL);
-        } else if (id == R.id.mapSatellite) {
-            setMapTypeWithDelay(GoogleMap.MAP_TYPE_SATELLITE);
-        } else if (id == R.id.mapHybrid) {
-            setMapTypeWithDelay(GoogleMap.MAP_TYPE_HYBRID);
-        } else if (id == R.id.mapTerrain) {
-            setMapTypeWithDelay(GoogleMap.MAP_TYPE_TERRAIN);
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void setMapTypeWithDelay(final int mapType) {
-        new android.os.Handler().postDelayed(
-                () -> {
-                    if (mMap != null) {
-                        try {
-                            mMap.setMapType(mapType);
-                        } catch (Exception e) {
-                            Log.e(TAG, "Error changing map type: " + e.getMessage());
-                        }
-                    }
-                },
-                1000 // 1 second delay, you can adjust this
-        );
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        int id = item.getItemId();
+//
+//        if (id == R.id.mapNone) {
+//            setMapTypeWithDelay(GoogleMap.MAP_TYPE_NONE);
+//        } else if (id == R.id.mapNormal) {
+//            setMapTypeWithDelay(GoogleMap.MAP_TYPE_NORMAL);
+//        } else if (id == R.id.mapSatellite) {
+//            setMapTypeWithDelay(GoogleMap.MAP_TYPE_SATELLITE);
+//        } else if (id == R.id.mapHybrid) {
+//            setMapTypeWithDelay(GoogleMap.MAP_TYPE_HYBRID);
+//        } else if (id == R.id.mapTerrain) {
+//            setMapTypeWithDelay(GoogleMap.MAP_TYPE_TERRAIN);
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
+//
+//    private void setMapTypeWithDelay(final int mapType) {
+//        new android.os.Handler().postDelayed(
+//                () -> {
+//                    if (mMap != null) {
+//                        try {
+//                            mMap.setMapType(mapType);
+//                        } catch (Exception e) {
+//                            Log.e(TAG, "Error changing map type: " + e.getMessage());
+//                        }
+//                    }
+//                },
+//                1000 // 1 second delay, you can adjust this
+//        );
+//    }
     @Override
     public void onPoiClick(PointOfInterest poi) {
         try {
@@ -505,17 +558,66 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     // Method to be called when the specific button is clicked
     private void onSpecificButtonClicked() {
         getDeviceLocation();
-        // Replace with desired place type: "police", "hospital", or "fire_station"
-        getNearbyPlace("police");
+
+        if (isShowingNearbyPlaces) {
+            // Toggle back to showing all nearby crimes
+            showAllNearbyCrimes();
+        } else {
+            // Show nearby police
+            getNearbyPlace("police");
+            isShowingNearbyPlaces = true;
+        }
     }
+
     private void onSpecificButtonClicked2() {
         getDeviceLocation();
-        // Replace with desired place type: "police", "hospital", or "fire_station"
-        getNearbyPlace("hospital");
+
+        if (isShowingNearbyPlaces) {
+            // Toggle back to showing all nearby crimes
+            showAllNearbyCrimes();
+        } else {
+            // Show nearby hospital
+            getNearbyPlace("hospital");
+            isShowingNearbyPlaces = true;
+        }
     }
+
     private void onSpecificButtonClicked3() {
         getDeviceLocation();
-        // Replace with desired place type: "police", "hospital", or "fire_station"
-        getNearbyPlace("fire%20station");
+
+        if (isShowingNearbyPlaces) {
+            // Toggle back to showing all nearby crimes
+            showAllNearbyCrimes();
+        } else {
+            // Show nearby fire station
+            getNearbyPlace("fire%20station");
+            isShowingNearbyPlaces = true;
+        }
+    }
+
+    private void showAllNearbyCrimes() {
+        // Assuming crime markers are already added to the map during onMapReady
+        moveCameraToUserLocation();
+        addCrimeMarkers(); // Add crime markers back to the map
+        isShowingNearbyPlaces = false;
+    }
+
+    private void addCrimeMarkers() {
+        for (Crime crime : crimeData) {
+            LatLng crimeLocation = new LatLng(crime.getLatitude(), crime.getLongitude());
+            float markerColor = getMarkerColor(crime.getCrimeType());
+
+            Log.d(TAG, "Adding marker: " + crime.getCrimeType() + " with color: " + markerColor);
+            mMap.addMarker(new MarkerOptions()
+                    .position(crimeLocation)
+                    .title(crime.getCrimeType())
+                    .icon(BitmapDescriptorFactory.defaultMarker(markerColor)));
+        }
+    }
+    private void moveCameraToUserLocation() {
+        if (currentLat != 0 && currentLng != 0) {
+            LatLng userLocation = new LatLng(currentLat, currentLng);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, DEFAULT_ZOOM));
+        }
     }
 }
