@@ -14,8 +14,7 @@
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_height="10dp" />
 
     <LinearLayout
         android:id="@+id/layoutDateTime"
@@ -144,11 +143,12 @@
     <!-- Placeholder for uploaded media -->
     <ImageView
         android:id="@+id/imageViewMedia"
-        android:layout_width="10dp"
+        android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_below="@id/layoutMediaButtons"
         android:layout_marginTop="8dp"
         android:visibility="gone"
+        android:scaleType="fitCenter"
         android:contentDescription="@string/todo" />
 
     <Button

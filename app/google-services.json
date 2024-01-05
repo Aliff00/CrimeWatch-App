@@ -1,0 +1,86 @@
+{
+  "project_info": {
+    "project_number": "872390057784",
+    "project_id": "crimewatch-2e8cb",
+    "storage_bucket": "crimewatch-2e8cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:872390057784:android:64b8beb570671626dd6bcd",
+        "android_client_info": {
+          "package_name": "com.example.assigment"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0aMXD4cuSRe6wnWHcddeteeYimjW61qs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:872390057784:android:2b308601a225cff0dd6bcd",
+        "android_client_info": {
+          "package_name": "com.example.crimewatch"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0aMXD4cuSRe6wnWHcddeteeYimjW61qs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:872390057784:android:9135130a2d6ef917dd6bcd",
+        "android_client_info": {
+          "package_name": "com.example.map"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0aMXD4cuSRe6wnWHcddeteeYimjW61qs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:872390057784:android:bbd3107b104f1ae9dd6bcd",
+        "android_client_info": {
+          "package_name": "com.example.newmediaupload"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0aMXD4cuSRe6wnWHcddeteeYimjW61qs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
