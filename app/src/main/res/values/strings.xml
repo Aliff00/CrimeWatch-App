@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">NewMediaUpload</string>
+    <string name="date">Date:</string>
+    <string name="select_date">Select Date</string>
+    <string name="select_time">Select Time</string>
+    <string name="time">Time:</string>
+    <string name="describe_the_location">Describe the location</string>
+    <string name="description">Description:</string>
+    <string name="what_happened">What happened?</string>
+    <string name="media">Media:</string>
+    <string name="upload_media">Upload Media</string>
+    <string name="location">Location:</string>
+    <string name="submit_report">Submit Report</string>
+    <string name="todo">TODO</string>
+    <string name="open_gallery">Open Gallery</string>
+    <string name="take_photo">Take Photo</string>
+</resources>
