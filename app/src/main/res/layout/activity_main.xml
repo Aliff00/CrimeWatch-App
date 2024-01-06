@@ -105,12 +105,29 @@
         android:hint="@string/what_happened"
         android:textColor="@android:color/white"
         android:textColorHint="#8E8E8E" />
+    <TextView
+        android:id="@+id/TVtagUsers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextIncident"
+        android:layout_marginTop="16dp"
+        android:text="Witness Tag"
+        android:textColor="@android:color/white"/>
+    <EditText
+        android:id="@+id/editTextTagUsers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/TVtagUsers"
+        android:layout_marginTop="8dp"
+        android:hint="Name and NRIC"
+        android:textColor="@android:color/white"
+        android:textColorHint="#8E8E8E"/>
 
     <TextView
         android:id="@+id/textViewMedia"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editTextIncident"
+        android:layout_below="@id/editTextTagUsers"
         android:layout_marginTop="16dp"
         android:text="@string/media"
         android:textColor="@android:color/white"/>
