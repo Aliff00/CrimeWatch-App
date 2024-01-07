@@ -8,8 +8,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -24,12 +22,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -40,14 +40,13 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-import com.google.android.gms.common.api.Status;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-//import com.google.android.libraries.places.widget.model.AutocompletePrediction;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -77,19 +76,49 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
     private static final float DEFAULT_ZOOM = 15f;
     private Boolean mLocationPermissionsGranted = false;
     private FusedLocationProviderClient mfusedLocationProviderClient;
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "MapReport";
     private Toolbar toolbar;
     private LinearLayout legendLayout;  // Add this line
     private List<Crime> crimeData = new ArrayList<>();
     private double currentLat = 0;
     private double currentLng = 0;
     private FirebaseFirestore db;
+    private ListenerRegistration reportListener;
     private boolean isShowingNearbyPlaces = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_map);
         FirebaseApp.initializeApp(this);
+        // Initialize Firestore
+        db = FirebaseFirestore.getInstance();
+        // Reference to the "report" collection
+        CollectionReference reportCollectionRef = db.collection("report");
+
+        // Fetch all documents from the "report" collection
+        reportCollectionRef.get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        // Convert each document to a Report object
+
+                        Report report = document.toObject(Report.class);
+
+                        // Access the fields of the Report object
+                        String desc = report.getDesc();
+                        GeoPoint location = report.getLocation();
+                        Timestamp timestamp = report.getTimestamp();
+                        String user = report.getUserId();
+                        Log.d(TAG, "desc: " + desc);
+                        Log.d(TAG, "location " + location.toString());
+                        Log.d(TAG, "timestamp: " + timestamp.toString());
+                        Log.d(TAG, "user: " + user);
+                        // Use the data as needed
+                        // For example, you can update UI or perform other operations
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.d(TAG, "Error: " + e.getMessage());
+                });
 
         // Initialize Toolbar
         toolbar = findViewById(R.id.toolbar);
@@ -107,35 +136,6 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
 
         // Initialize the legend button
         initLegendButton();  // Make sure to add this line
-        db = FirebaseFirestore.getInstance();
-
-        // Reference to the "report" collection
-        CollectionReference reportCollectionRef = db.collection("report");
-
-// Fetch all documents from the "report" collection
-        reportCollectionRef.get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        // Convert each document to a Report object
-
-                        Report report = document.toObject(Report.class);
-
-                        // Access the fields of the Report object
-                        String desc = report.getDesc();
-                        GeoPoint location = report.getLocation();
-                        Timestamp timestamp = report.getTimestamp();
-                        String user = report.getUser();
-                        Log.d(TAG, "desc: " + desc);
-                        Log.d(TAG, "location " + location.toString());
-                        Log.d(TAG, "timestamp: " + timestamp.toString());
-                        Log.d(TAG, "user: " + user);
-                        // Use the data as needed
-                        // For example, you can update UI or perform other operations
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.d(TAG, "Error: " + e.getMessage());
-                });
 
         ImageButton specificButton = findViewById(R.id.btnPolice); // Replace with your button's ID
         specificButton.setOnClickListener(v -> onSpecificButtonClicked());
@@ -145,6 +145,10 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
 
         ImageButton specificButton3 = findViewById(R.id.btnFireDepartment); // Replace with your button's ID
         specificButton3.setOnClickListener(v -> onSpecificButtonClicked3());
+
+        // Start listening for report updates
+        startReportListener();
+
     }
     private void initLegend() {
         // Reference to the legend layout
@@ -280,13 +284,13 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
         Log.d(TAG, "getMarkerColor: Crime Type: " + crimeType);
         if ("Violent Crime".equals(crimeType)) {
             Log.d(TAG, "getMarkerColor: Setting color to Red for Violent Crime");
-            return BitmapDescriptorFactory.HUE_RED;
+            return BitmapDescriptorFactory.HUE_VIOLET;
         } else if ("Property Crime".equals(crimeType)) {
             Log.d(TAG, "getMarkerColor: Setting color to Blue for Property Crime");
-            return BitmapDescriptorFactory.HUE_BLUE;
+            return BitmapDescriptorFactory.HUE_VIOLET;
         }
         Log.d(TAG, "getMarkerColor: Setting default color (Green)");
-        return BitmapDescriptorFactory.HUE_GREEN; // Default color
+        return BitmapDescriptorFactory.HUE_RED; // Default color
     }
 
     private void iniMap() {
@@ -419,45 +423,6 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        int id = item.getItemId();
-//
-//        if (id == R.id.mapNone) {
-//            setMapTypeWithDelay(GoogleMap.MAP_TYPE_NONE);
-//        } else if (id == R.id.mapNormal) {
-//            setMapTypeWithDelay(GoogleMap.MAP_TYPE_NORMAL);
-//        } else if (id == R.id.mapSatellite) {
-//            setMapTypeWithDelay(GoogleMap.MAP_TYPE_SATELLITE);
-//        } else if (id == R.id.mapHybrid) {
-//            setMapTypeWithDelay(GoogleMap.MAP_TYPE_HYBRID);
-//        } else if (id == R.id.mapTerrain) {
-//            setMapTypeWithDelay(GoogleMap.MAP_TYPE_TERRAIN);
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-//
-//    private void setMapTypeWithDelay(final int mapType) {
-//        new android.os.Handler().postDelayed(
-//                () -> {
-//                    if (mMap != null) {
-//                        try {
-//                            mMap.setMapType(mapType);
-//                        } catch (Exception e) {
-//                            Log.e(TAG, "Error changing map type: " + e.getMessage());
-//                        }
-//                    }
-//                },
-//                1000 // 1 second delay, you can adjust this
-//        );
-//    }
     @Override
     public void onPoiClick(PointOfInterest poi) {
         try {
@@ -470,7 +435,7 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
             Log.e(TAG, "Error handling POI click: " + e.getMessage());
         }
     }
-    private void parseResult(String data) {
+    private void parseResult(String data, String placeType) {
         try {
             JSONObject object = new JSONObject(data);
 
@@ -488,10 +453,15 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
                             double lng = Double.parseDouble(Objects.requireNonNull(hashMapList.get("lng")));
                             String name = hashMapList.get("name");
                             LatLng latLng = new LatLng(lat, lng);
+                            float markerColor = getMarkerColorForPlaceType(placeType);
+
                             if (i == 0) {
                                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
                             }
-                            mMap.addMarker(new MarkerOptions().position(latLng).title(name));
+                            mMap.addMarker(new MarkerOptions()
+                                    .position(latLng)
+                                    .title(name)
+                                    .icon(BitmapDescriptorFactory.defaultMarker(markerColor))); // Apply the marker color here
                         }
                     });
                 } else {
@@ -508,7 +478,8 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    private void getNearbyPlace(String command) {
+
+    private void getNearbyPlace(String command, String placeType) {
         String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
                 "?location=" + currentLat + "," + currentLng +
                 "&radius=5000" + // specify the radius in meters
@@ -525,7 +496,7 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
-                    }, executor).thenAccept(this::parseResult)
+                    }, executor).thenAccept(data -> parseResult(data, placeType))
                     .exceptionally(ex -> {
                         Log.e(TAG, "Exception in CompletableFuture: " + ex.getMessage());
                         return null;
@@ -558,40 +529,43 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
     // Method to be called when the specific button is clicked
     private void onSpecificButtonClicked() {
         getDeviceLocation();
-
         if (isShowingNearbyPlaces) {
-            // Toggle back to showing all nearby crimes
             showAllNearbyCrimes();
         } else {
-            // Show nearby police
-            getNearbyPlace("police");
+            getNearbyPlace("police", "police");
             isShowingNearbyPlaces = true;
         }
     }
 
     private void onSpecificButtonClicked2() {
         getDeviceLocation();
-
         if (isShowingNearbyPlaces) {
-            // Toggle back to showing all nearby crimes
             showAllNearbyCrimes();
         } else {
-            // Show nearby hospital
-            getNearbyPlace("hospital");
+            getNearbyPlace("hospital", "hospital");
             isShowingNearbyPlaces = true;
         }
     }
 
     private void onSpecificButtonClicked3() {
         getDeviceLocation();
-
         if (isShowingNearbyPlaces) {
-            // Toggle back to showing all nearby crimes
             showAllNearbyCrimes();
         } else {
-            // Show nearby fire station
-            getNearbyPlace("fire%20station");
+            getNearbyPlace("fire station", "fire_station");
             isShowingNearbyPlaces = true;
+        }
+    }
+    private float getMarkerColorForPlaceType(String placeType) {
+        switch (placeType) {
+            case "police":
+                return BitmapDescriptorFactory.HUE_BLUE;  // Set the color for police markers
+            case "hospital":
+                return BitmapDescriptorFactory.HUE_GREEN;  // Set the color for hospital markers
+            case "fire_station":
+                return BitmapDescriptorFactory.HUE_ORANGE;   // Set the color for fire station markers
+            default:
+                return BitmapDescriptorFactory.HUE_YELLOW; // Default color
         }
     }
 
@@ -620,4 +594,59 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, DEFAULT_ZOOM));
         }
     }
+
+    private void startReportListener() {
+        try {
+            Log.d(TAG, "startReportListener: Start listening for reports");
+            FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+            CollectionReference reportsRef = fStore.collection("report");
+
+            reportsRef.get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        Toast.makeText(this, "Obtaining Report location nearby", Toast.LENGTH_LONG).show();
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            Report report = document.toObject(Report.class);
+
+                            // Log details of the report
+
+                            // Add marker for the report
+                            addReportMarker(report);
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Error fetching reports: ", e);
+                    });
+        } catch (Exception e) {
+            Log.e(TAG, "Exception in startReportListener: " + e.getMessage());
+        }
+    }
+
+
+    private void addReportMarker(Report report) {
+        // Access the GeoPoint from the report
+        GeoPoint geoPoint = report.getLocation(); // Assuming report now has a GeoPoint field
+
+        // Create a LatLng object from the GeoPoint
+        LatLng reportLocation = new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
+        // Create a purple marker icon
+        BitmapDescriptor markerIcon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET);
+
+        // Add the marker to the map
+        mMap.addMarker(new MarkerOptions()
+                .position(reportLocation)
+                .title(report.getDesc())
+                .icon(markerIcon)  // Set the marker icon to the purple color
+        );
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Stop listening for updates when the activity is destroyed
+        if (reportListener != null) {
+            reportListener.remove();
+        }
+    }
+
+
 }
