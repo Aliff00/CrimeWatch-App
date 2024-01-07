@@ -29,6 +29,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -283,13 +284,13 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
         Log.d(TAG, "getMarkerColor: Crime Type: " + crimeType);
         if ("Violent Crime".equals(crimeType)) {
             Log.d(TAG, "getMarkerColor: Setting color to Red for Violent Crime");
-            return BitmapDescriptorFactory.HUE_RED;
+            return BitmapDescriptorFactory.HUE_VIOLET;
         } else if ("Property Crime".equals(crimeType)) {
             Log.d(TAG, "getMarkerColor: Setting color to Blue for Property Crime");
-            return BitmapDescriptorFactory.HUE_BLUE;
+            return BitmapDescriptorFactory.HUE_VIOLET;
         }
         Log.d(TAG, "getMarkerColor: Setting default color (Green)");
-        return BitmapDescriptorFactory.HUE_GREEN; // Default color
+        return BitmapDescriptorFactory.HUE_RED; // Default color
     }
 
     private void iniMap() {
@@ -434,7 +435,7 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
             Log.e(TAG, "Error handling POI click: " + e.getMessage());
         }
     }
-    private void parseResult(String data) {
+    private void parseResult(String data, String placeType) {
         try {
             JSONObject object = new JSONObject(data);
 
@@ -452,10 +453,15 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
                             double lng = Double.parseDouble(Objects.requireNonNull(hashMapList.get("lng")));
                             String name = hashMapList.get("name");
                             LatLng latLng = new LatLng(lat, lng);
+                            float markerColor = getMarkerColorForPlaceType(placeType);
+
                             if (i == 0) {
                                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
                             }
-                            mMap.addMarker(new MarkerOptions().position(latLng).title(name));
+                            mMap.addMarker(new MarkerOptions()
+                                    .position(latLng)
+                                    .title(name)
+                                    .icon(BitmapDescriptorFactory.defaultMarker(markerColor))); // Apply the marker color here
                         }
                     });
                 } else {
@@ -472,7 +478,8 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    private void getNearbyPlace(String command) {
+
+    private void getNearbyPlace(String command, String placeType) {
         String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
                 "?location=" + currentLat + "," + currentLng +
                 "&radius=5000" + // specify the radius in meters
@@ -489,7 +496,7 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
-                    }, executor).thenAccept(this::parseResult)
+                    }, executor).thenAccept(data -> parseResult(data, placeType))
                     .exceptionally(ex -> {
                         Log.e(TAG, "Exception in CompletableFuture: " + ex.getMessage());
                         return null;
@@ -522,40 +529,43 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
     // Method to be called when the specific button is clicked
     private void onSpecificButtonClicked() {
         getDeviceLocation();
-
         if (isShowingNearbyPlaces) {
-            // Toggle back to showing all nearby crimes
             showAllNearbyCrimes();
         } else {
-            // Show nearby police
-            getNearbyPlace("police");
+            getNearbyPlace("police", "police");
             isShowingNearbyPlaces = true;
         }
     }
 
     private void onSpecificButtonClicked2() {
         getDeviceLocation();
-
         if (isShowingNearbyPlaces) {
-            // Toggle back to showing all nearby crimes
             showAllNearbyCrimes();
         } else {
-            // Show nearby hospital
-            getNearbyPlace("hospital");
+            getNearbyPlace("hospital", "hospital");
             isShowingNearbyPlaces = true;
         }
     }
 
     private void onSpecificButtonClicked3() {
         getDeviceLocation();
-
         if (isShowingNearbyPlaces) {
-            // Toggle back to showing all nearby crimes
             showAllNearbyCrimes();
         } else {
-            // Show nearby fire station
-            getNearbyPlace("fire%20station");
+            getNearbyPlace("fire station", "fire_station");
             isShowingNearbyPlaces = true;
+        }
+    }
+    private float getMarkerColorForPlaceType(String placeType) {
+        switch (placeType) {
+            case "police":
+                return BitmapDescriptorFactory.HUE_BLUE;  // Set the color for police markers
+            case "hospital":
+                return BitmapDescriptorFactory.HUE_GREEN;  // Set the color for hospital markers
+            case "fire_station":
+                return BitmapDescriptorFactory.HUE_ORANGE;   // Set the color for fire station markers
+            default:
+                return BitmapDescriptorFactory.HUE_YELLOW; // Default color
         }
     }
 
@@ -563,6 +573,7 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
         // Assuming crime markers are already added to the map during onMapReady
         moveCameraToUserLocation();
         addCrimeMarkers(); // Add crime markers back to the map
+        startReportListener();
         isShowingNearbyPlaces = false;
     }
 
@@ -618,13 +629,14 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
 
         // Create a LatLng object from the GeoPoint
         LatLng reportLocation = new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
+        // Create a purple marker icon
+        BitmapDescriptor markerIcon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET);
 
         // Add the marker to the map
         mMap.addMarker(new MarkerOptions()
-                        .position(reportLocation)
-                        .title(report.getDesc())
-                // Customize the marker as needed
-
+                .position(reportLocation)
+                .title(report.getDesc())
+                .icon(markerIcon)  // Set the marker icon to the purple color
         );
     }
 
