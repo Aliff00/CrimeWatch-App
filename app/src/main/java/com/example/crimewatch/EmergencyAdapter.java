@@ -5,6 +5,7 @@ import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,13 +16,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class EmergencyAdapter extends RecyclerView.Adapter<EmergencyAdapter.MyViewHolder> {
-    private List<ContactModel> dataList;
-
+    private static List<ContactModel> dataList;
+    private static OnItemClickListener onItemClickListener;
     private int mExpandedPosition = -1;
     private int previousExpandedPosition = -1;
 
-    public EmergencyAdapter(List<ContactModel> dataList) {
+    public interface OnItemClickListener {
+        void onItemClick(ContactModel item);
+    }
+
+    public EmergencyAdapter(List<ContactModel> dataList, OnItemClickListener onItemClickListener) {
+
         this.dataList = dataList;
+        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
@@ -37,7 +44,7 @@ public class EmergencyAdapter extends RecyclerView.Adapter<EmergencyAdapter.MyVi
         holder.textViewTitle.setText(item.getName());
         holder.textViewPhoneNumber.setText(item.getPhoneNo());
         holder.textViewDesc.setText(item.getDesc());
-
+        holder.imageView.setImageResource(item.getImageResourceId());
         final boolean isExpanded = position==mExpandedPosition;
         holder.hiddenView.setVisibility(isExpanded?View.VISIBLE:View.GONE);
         holder.itemView.setActivated(isExpanded);
@@ -45,14 +52,14 @@ public class EmergencyAdapter extends RecyclerView.Adapter<EmergencyAdapter.MyVi
         if (isExpanded)
             previousExpandedPosition = position;
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mExpandedPosition = isExpanded ? -1:position;
-                notifyItemChanged(previousExpandedPosition);
-                notifyItemChanged(position);
-            }
-        });
+//        holder.itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mExpandedPosition = isExpanded ? -1:position;
+//                notifyItemChanged(previousExpandedPosition);
+//                notifyItemChanged(position);
+//            }
+//        });
 
     }
 
@@ -76,6 +83,15 @@ public class EmergencyAdapter extends RecyclerView.Adapter<EmergencyAdapter.MyVi
             textViewPhoneNumber = itemView.findViewById(R.id.TVPhoneHelpline);
             hiddenView = itemView.findViewById(R.id.hiddenView);
             textViewDesc = itemView.findViewById(R.id.TVDescHelpline);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION && onItemClickListener != null) {
+                        onItemClickListener.onItemClick(dataList.get(position));
+                    }
+                }
+            });
         }
     }
 }
