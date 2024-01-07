@@ -27,6 +27,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -46,6 +48,7 @@
                 android:textSize="18sp" />
 
         </androidx.appcompat.widget.Toolbar>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -54,9 +57,15 @@
         <FrameLayout
             android:id="@+id/fragment_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/toolbar"
-            android:layout_above="@id/bottomAppBar" />
+            android:layout_height="858dp"
+            android:layout_above="@id/bottomAppBar"
+            android:layout_below="@id/toolbar">
+
+            <FrameLayout
+                android:id="@+id/frame_layout"
+                android:layout_width="match_parent"
+                android:layout_height="863dp" />
+        </FrameLayout>
 
     </LinearLayout>
 
@@ -72,12 +81,6 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <FrameLayout
-            android:id="@+id/frame_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
 
 
         <com.google.android.material.bottomappbar.BottomAppBar
