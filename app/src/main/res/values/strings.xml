@@ -13,4 +13,18 @@
     <string name="NUR"> Talian Nur is the hotline link to enable early intervention for victims of domestic violence, child abuse, and natural disasters and this is powered by Juris Contact.</string>
     <string name="WAO">Womens Aid Organisation (WAO) is a Malaysian NGO that provides free shelter, counselling, and crisis support to women and children who experience abuse.</string>
     <string name="api_key">AIzaSyBBuX8J5JTjAMb11N1OEQizDix42NYf1VU</string>
+    <string name="date">Date:</string>
+    <string name="select_date">Select Date</string>
+    <string name="select_time">Select Time</string>
+    <string name="time">Time:</string>
+    <string name="describe_the_location">Describe the location</string>
+    <string name="description">Description:</string>
+    <string name="what_happened">What happened?</string>
+    <string name="media">Media:</string>
+    <string name="upload_media">Upload Media</string>
+    <string name="location">Location:</string>
+    <string name="submit_report">Submit Report</string>
+    <string name="todo">TODO</string>
+    <string name="open_gallery">Open Gallery</string>
+    <string name="take_photo">Take Photo</string>
 </resources>

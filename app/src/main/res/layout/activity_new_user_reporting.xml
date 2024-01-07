@@ -10,7 +10,7 @@
     android:padding="16dp"
     android:background="#000000">
 
-<!--    &lt;!&ndash;    Tak guna for now&ndash;&gt;-->
+    <!--    Tak guna for now-->
 <!--    <androidx.camera.view.PreviewView-->
 <!--        android:id="@+id/previewView"-->
 <!--        android:layout_width="match_parent"-->
@@ -26,7 +26,7 @@
             android:id="@+id/textViewDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="date"
+            android:text="@string/date"
             android:layout_marginTop="16dp"
             android:textColor="@android:color/white"/>
 
@@ -37,7 +37,7 @@
             android:layout_marginTop="16dp"
             android:layout_weight="1"
             android:focusable="false"
-            android:hint="select date"
+            android:hint="@string/select_date"
             android:inputType="none"
             android:onClick="showDatePicker"
             android:textColor="@android:color/white"
@@ -49,7 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="time"
+            android:text="@string/time"
             android:layout_marginTop="16dp"
             android:textColor="@android:color/white"/>
 
@@ -60,7 +60,7 @@
             android:layout_marginTop="16dp"
             android:layout_weight="1"
             android:focusable="false"
-            android:hint="select time"
+            android:hint="@string/select_time"
             android:inputType="none"
             android:onClick="showTimePicker"
             android:textColor="@android:color/white"
@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/layoutDateTime"
         android:layout_marginTop="16dp"
-        android:text="location"
+        android:text="@string/location"
         android:textColor="@android:color/white"/>
 
     <TextView
@@ -82,10 +82,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewLocation"
-        android:layout_marginTop="7dp"
-        android:clickable="true"
-        android:hint="Choose location from map"
-        android:textColor="#7786c6"
+        android:layout_marginTop="8dp"
+        android:hint="Tap to choose location"
+        android:textColor="@android:color/white"
         android:textColorHint="#8E8E8E" />
 
     <TextView
@@ -94,7 +93,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/editTextLocation"
         android:layout_marginTop="16dp"
-        android:text="description"
+        android:text="@string/description"
         android:textColor="@android:color/white"/>
 
     <EditText
@@ -103,7 +102,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewWhatHappen"
         android:layout_marginTop="8dp"
-        android:hint="what happened"
+        android:hint="@string/what_happened"
         android:textColor="@android:color/white"
         android:textColorHint="#8E8E8E" />
     <TextView
@@ -130,7 +129,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/editTextTagUsers"
         android:layout_marginTop="16dp"
-        android:text="media"
+        android:text="@string/media"
         android:textColor="@android:color/white"/>
 
     <LinearLayout
@@ -147,14 +146,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="takePhoto"
-            android:text="take photo" />
+            android:text="@string/take_photo" />
 
         <Button
             android:id="@+id/btnUploadGallery"
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="open gallery"
+            android:text="@string/open_gallery"
             android:onClick="uploadFromGallery" />
     </LinearLayout>
 
@@ -167,7 +166,7 @@
         android:layout_marginTop="8dp"
         android:visibility="gone"
         android:scaleType="fitCenter"
-        android:contentDescription="/todo" />
+        android:contentDescription="@string/todo" />
 
     <Button
         android:id="@+id/btnSubmitReport"
@@ -176,7 +175,7 @@
         android:layout_below="@id/imageViewMedia"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:text="submit report"/>
+        android:text="@string/submit_report"/>
 
     <FrameLayout
         android:layout_width="match_parent"

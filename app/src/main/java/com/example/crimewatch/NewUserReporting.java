@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,6 +40,9 @@ import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -67,7 +71,8 @@ public class NewUserReporting extends AppCompatActivity implements OnMapReadyCal
     private Marker currentMarker;
      Button exitMapButton;
     FirebaseFirestore fStore;
-
+    private StorageReference storageRef;
+    private Uri selectedImageUri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,7 +96,7 @@ public class NewUserReporting extends AppCompatActivity implements OnMapReadyCal
         Button btnTakePhoto = findViewById(R.id.btnTakePhoto);
         fStore = FirebaseFirestore.getInstance();
         btnTakePhoto.setOnClickListener(v -> launchCamera());
-
+        storageRef = FirebaseStorage.getInstance().getReference();
         Button btnUploadGallery = findViewById(R.id.btnUploadGallery);
         btnUploadGallery.setOnClickListener(v -> uploadFromGallery());
         editTextLocation.setOnClickListener(new View.OnClickListener() {
@@ -130,14 +135,6 @@ public class NewUserReporting extends AppCompatActivity implements OnMapReadyCal
                     String combinedDateTime = dateString + " " + timeString;
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
                     Date parsedDateTime = sdf.parse(combinedDateTime);
-//                    Date date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(dateString);
-//                    Date time = new SimpleDateFormat("hh:mm aa", Locale.getDefault()).parse(timeString);
-//
-//                    // Create Calendar object with combined date and time
-//                    Calendar calendar = Calendar.getInstance();
-//                    calendar.setTime(date);
-//                    calendar.set(Calendar.HOUR_OF_DAY, time.getHours());
-//                    calendar.set(Calendar.MINUTE, time.getMinutes());
 
                     // Create Timestamp object
                     Timestamp timestamp = new Timestamp(parsedDateTime);
@@ -158,7 +155,9 @@ public class NewUserReporting extends AppCompatActivity implements OnMapReadyCal
                             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
+                                    String documentID = documentReference.getId();
                                     Toast.makeText(NewUserReporting.this, "Report successfully sent!", Toast.LENGTH_SHORT).show();
+                                    uploadImage(selectedImageUri,documentID, documentReference);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -263,11 +262,12 @@ public class NewUserReporting extends AppCompatActivity implements OnMapReadyCal
 
     private void handlePickedImage(Intent data) {
         if (data != null && data.getData() != null) {
-            Uri selectedImageUri = data.getData();
+            selectedImageUri = data.getData();
             imageViewMedia.setImageURI(selectedImageUri);
             imageViewMedia.setVisibility(View.VISIBLE);
             photoTaken = true;
             updateSubmitButtonVisibility();
+
         }
     }
 
@@ -364,4 +364,66 @@ public class NewUserReporting extends AppCompatActivity implements OnMapReadyCal
 
         });
     }
+
+    private void uploadImage(Uri imageUri, String documentID, DocumentReference documentReference) {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = auth.getCurrentUser();
+
+        if (currentUser != null) {
+            if (imageUri != null) {
+                // Create a reference to the image file in Firebase Storage
+                StorageReference imageRef = storageRef.child(currentUser.getUid() + "/" + documentID + ".jpg");
+
+                // Upload the image
+                imageRef.putFile(imageUri)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                Toast.makeText(NewUserReporting.this, "Image uploaded successfully!", Toast.LENGTH_SHORT).show();
+                                // Get the download URL of the uploaded image
+                                Task<Uri> downloadUrlTask = taskSnapshot.getStorage().getDownloadUrl();
+                                downloadUrlTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri downloadUri) {
+                                        // Get the DocumentReference of the report
+                                        DocumentReference reportRef = documentReference;
+
+                                                // Update the report data with the image URL
+                                                reportRef.update("imageUrl", downloadUri.toString())
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                // Image URL stored successfully
+                                                                Log.d("NewUserReporting", "Image URL stored in report");
+                                                            }
+                                                        })
+                                                        .addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                // Handle error storing image URL
+                                                                Log.e("NewUserReporting", "Error storing image URL", e);
+                                                            }
+                                                        });
+                                    }
+                                });
+
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(NewUserReporting.this, "Image upload failed.", Toast.LENGTH_SHORT).show();
+                                Log.d("NewUserReporting", "Image upload failed");
+                            }
+                        });
+            }
+         else {
+            Toast.makeText(NewUserReporting.this, "No image selected.", Toast.LENGTH_SHORT).show();
+        }}
+        else {
+            // Handle the case where the user is not signed in
+            Toast.makeText(NewUserReporting.this, "User is not signed in.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }
