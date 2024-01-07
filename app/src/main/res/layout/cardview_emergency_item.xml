@@ -37,7 +37,7 @@
                     android:layout_gravity="center_vertical"
                     android:contentDescription="@string/app_name"
                     android:padding="10dp"
-                    android:src="@drawable/baseline_home_work_24"
+
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

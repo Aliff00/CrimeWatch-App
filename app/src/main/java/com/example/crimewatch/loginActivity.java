@@ -1,9 +1,12 @@
 package com.example.crimewatch;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -16,14 +19,24 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class loginActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     ProgressBar progressBar2;
     private SharedPreferences preferences;
+
+    FirebaseFirestore db;
 
 
     @Override
@@ -32,6 +45,7 @@ public class loginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
         //Declare user inputs
+        db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         progressBar2 = findViewById(R.id.progressBar2);
         EditText editEmail = findViewById(R.id.emailPrompt);
@@ -51,6 +65,29 @@ public class loginActivity extends AppCompatActivity {
         if (!rememberMe && savedEmail != null && savedPassword != null) {
             loginUser(savedEmail,savedPassword,rememberMeCheckBox);
         }
+        // Create a new user with a first and last name
+        Map<String, Object> user = new HashMap<>();
+        user.put("NRIC", "030622050019");
+        user.put("fullname", "muhammad iqbal danial bin firdaus");
+
+
+// Add a new document with a generated ID
+        db.collection("users")
+                .add(user)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
+
+
         singInText.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -91,6 +128,13 @@ public class loginActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+    }
+
 
     private void loginUser(String email, String password,CheckBox rememberMeCheckBox) {
         progressBar2.setVisibility(View.VISIBLE);
@@ -104,7 +148,6 @@ public class loginActivity extends AppCompatActivity {
                             Intent intent2 = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent2);
                             finish();
-
                             if (rememberMeCheckBox.isChecked()) {
                                 SharedPreferences.Editor editor = preferences.edit();
                                 editor.putString("email", email);
@@ -126,4 +169,6 @@ public class loginActivity extends AppCompatActivity {
         super.onDestroy();
         preferences = null; // Clear the reference when the activity is destroyed
     }
+
+
 }

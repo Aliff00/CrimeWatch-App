@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.crimewatch.helper.CallHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -67,6 +68,7 @@ public class EmergencyFragment extends Fragment {
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -76,23 +78,29 @@ public class EmergencyFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         //contactlist
         List<ContactModel> dataList = new ArrayList<>();
-        dataList.add(new ContactModel("One Stop Crisis Center (OSCC)","03 2615 3333",getResources().getString(R.string.OSCC)));
+        dataList.add(new ContactModel("One Stop Crisis Center (OSCC)","03 2615 3333",getResources().getString(R.string.OSCC),R.drawable.oscc));
 
-        dataList.add(new ContactModel("All Women Action Society Malaysia (AWAM)","03 7877 4221",getResources().getString(R.string.AWAM)));
+        dataList.add(new ContactModel("All Women Action Society Malaysia (AWAM)","03 7877 4221",getResources().getString(R.string.AWAM),R.drawable.awam));
 
-        dataList.add(new ContactModel("Befrienders","03 7956 8144",getResources().getString(R.string.BF)));
+        dataList.add(new ContactModel("Befrienders","03 7956 8144",getResources().getString(R.string.BF),R.drawable.befrienders));
 
-        dataList.add(new ContactModel("Malaysian Mental Health Association","03 2780 6803",getResources().getString(R.string.HAWA)));
+        dataList.add(new ContactModel("Malaysian Mental Health Association","03 2780 6803",getResources().getString(R.string.HAWA),R.drawable.mmha));
 
-        dataList.add(new ContactModel("Talian NUR","15999",getResources().getString(R.string.NUR)));
+        dataList.add(new ContactModel("Talian NUR","15999",getResources().getString(R.string.NUR),R.drawable.talian));
 
-        dataList.add(new ContactModel("Woman Aid Organisation (WAO)","03 7956 3488",getResources().getString(R.string.WAO)));
-        adapter = new EmergencyAdapter(dataList);
+        dataList.add(new ContactModel("Woman Aid Organisation (WAO)","03 7956 3488",getResources().getString(R.string.WAO),R.drawable.wao));
+        adapter = new EmergencyAdapter(dataList, new EmergencyAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(ContactModel item) {
+                CallHelper.callService(getActivity(), item.getPhoneNo());
+            }
+        });
         recyclerView.setAdapter(adapter);
 
         return view;
 
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -112,4 +120,5 @@ public class EmergencyFragment extends Fragment {
             }
         });
     }
+
 }
