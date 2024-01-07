@@ -14,16 +14,14 @@
 
     android:layout_height="match_parent">
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".registerActivity">
 
     <EditText
         android:id="@+id/editConfirmPassword"
-        android:layout_width="296dp"
+        android:layout_width="330dp"
         android:layout_height="31dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
@@ -76,7 +74,9 @@
         android:id="@+id/displayAlreadyhaveaccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="120dp"
         android:fontFamily="@font/inter1"
         android:text="Already have an account?"
         android:textColor="@color/white"
@@ -128,7 +128,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="40dp"
-        android:text="IDENTITY NUMBER"
+        android:text="IDENTITY CARD NUMBER"
         android:textSize="14dp"
         android:fontFamily="@font/inter1"
         android:textColor="@color/white"
@@ -137,7 +137,7 @@
 
     <EditText
         android:id="@+id/editPassword"
-        android:layout_width="296dp"
+        android:layout_width="330dp"
         android:layout_height="31dp"
         android:layout_marginStart="20dp"
         android:textColor="@color/black"
@@ -151,7 +151,7 @@
 
     <EditText
         android:id="@+id/editEmail"
-        android:layout_width="296dp"
+        android:layout_width="330dp"
         android:layout_height="31dp"
         android:layout_marginStart="20dp"
         android:textColor="@color/black"
@@ -186,7 +186,7 @@
 
     <EditText
         android:id="@+id/editFullName"
-        android:layout_width="296dp"
+        android:layout_width="330dp"
         android:layout_height="31dp"
         android:textColor="@color/black"
         android:layout_marginStart="20dp"
@@ -202,7 +202,7 @@
     <EditText
         android:id="@+id/editUsername"
         android:textColor="@color/black"
-        android:layout_width="296dp"
+        android:layout_width="330dp"
         android:layout_height="31dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="8dp"

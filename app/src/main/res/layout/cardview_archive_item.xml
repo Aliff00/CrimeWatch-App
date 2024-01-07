@@ -26,8 +26,8 @@
                 android:id="@+id/TVReportTitle"
                 android:layout_width="267dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginStart="92dp"
+                android:layout_marginTop="16dp"
                 android:text="Title"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -35,53 +35,57 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/TVReportType"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="16dp"
-                android:text=""
-                android:textSize="15sp"
-                android:textStyle="normal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/TVReportTitle" />
-
-            <TextView
                 android:id="@+id/TVReportDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginStart="92dp"
                 android:text="Date : "
                 android:textSize="15sp"
                 android:textStyle="normal"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/TVReportType" />
+                app:layout_constraintTop_toBottomOf="@+id/TVReportTitle" />
 
             <TextView
                 android:id="@+id/TVReportTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginStart="92dp"
                 android:text="Time : "
                 android:textSize="15sp"
                 android:textStyle="normal"
-                app:layout_constraintStart_toEndOf="@id/TVReportDate"
-                app:layout_constraintTop_toBottomOf="@id/TVReportType" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/TVReportLocation" />
 
             <TextView
                 android:id="@+id/TVReportLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginStart="92dp"
                 android:text="Location : "
                 android:textSize="15sp"
                 android:textStyle="normal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/TVReportDate" />
 
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="92dp"
+                android:text="Status: "
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/TVReportTime" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="30dp"
+                android:text=""
+                android:textSize="50dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

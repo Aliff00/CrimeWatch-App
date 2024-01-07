@@ -6,9 +6,7 @@ import com.google.firebase.firestore.GeoPoint;
 public class Report {
 
     private Timestamp timestamp;
-    private GeoPoint location;
-    private String desc;
-    private String userId;
+
     public Timestamp getTimestamp() {
         return timestamp;
     }
@@ -41,7 +39,16 @@ public class Report {
         this.userId = userId;
     }
 
+    public String getStatus() {
+        return status;
+    }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-
+    private GeoPoint location;
+    private String desc;
+    private String userId;
+    private String status;
 }

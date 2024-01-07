@@ -74,7 +74,7 @@ public class MyFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my,container,false);
-
+        TextView userid = view.findViewById(R.id.textView3);
         Button buttonPriv = view.findViewById(R.id.privacy);
         Button logoutButton = view.findViewById(R.id.buttonLogOut);
         TextView nameTV = view.findViewById(R.id.textView2);
@@ -94,6 +94,7 @@ public class MyFragment extends Fragment {
                         if (document.exists()) {
                             String fullName = document.getString("fullName");
                             nameTV.setText("Hello "+fullName);
+                            userid.setText("ID: "+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                         } else {
                             // Handle the case where the user document doesn't exist
                             Log.w("TAG", "User document not found");
@@ -110,7 +111,14 @@ public class MyFragment extends Fragment {
             // Handle the case where there's no current user
             nameTV.setText("Not signed in"); // Or any other appropriate message
         }
-
+        Button statusUpdate = view.findViewById(R.id.myReports);
+        statusUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity().getApplicationContext(), StatusUpdate.class);
+                startActivity(intent);
+            }
+        });
         changePass.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View v) {

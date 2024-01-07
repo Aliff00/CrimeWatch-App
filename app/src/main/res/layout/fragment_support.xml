@@ -56,13 +56,7 @@
             android:layout_marginBottom="20dp"
             android:background="@drawable/button_border"
             android:text="EmergencyHotline" />
-        <Button
-            android:id="@+id/myReports"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/button_border"
-            android:text="My reports" />
+
 
 
     </LinearLayout>

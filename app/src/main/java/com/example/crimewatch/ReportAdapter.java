@@ -37,7 +37,16 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Report report = reports.get(position);
-
+        TextView emoji2 = holder.emoji;
+        String status = "pending";
+        if(status.equalsIgnoreCase("resolved")){
+            emoji2.setText("✅");
+        }
+        else{
+            emoji2.setText("⌛");
+        }
+        TextView status2 = holder.status;
+        status2.setText(report.getStatus());
         TextView timestampTextView = holder.timestampTextView;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formattedTimestamp = sdf.format(report.getTimestamp().toDate());
@@ -47,20 +56,35 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
         // Format and display location
         TextView locationTextView = holder.locationTextView;
         try {
-            Geocoder geocoder = new Geocoder(context, Locale.getDefault()); // Use device's locale
-            List<Address> addresses = geocoder.getFromLocation(report.getLocation().getLatitude(), report.getLocation().getLongitude(), 1);
-            if (addresses.size() > 0) {
-                Address address = addresses.get(0);
-                String locationName = address.getLocality() + ", " + address.getCountryName();
-                locationTextView.setText(locationName);
-            } else {
-                Log.d("ReportAdapter", "Geocoder returned no addresses"); // Log for debugging
-                locationTextView.setText("Unknown Location");
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault()); // Use device's locale
+        List<Address> addresses = geocoder.getFromLocation(report.getLocation().getLatitude(), report.getLocation().getLongitude(), 1);
+        if (addresses.size() > 0) {
+            Address address = addresses.get(0);
+            String locationName = "";
+            if (address.getThoroughfare() != null) {
+                locationName += address.getThoroughfare() + ", ";
             }
-        } catch (IOException e) {
-            Log.e("ReportAdapter", "Error retrieving location: " + e.getMessage()); // Log for debugging
-            locationTextView.setText("Error retrieving location");
+            if (address.getSubLocality() != null) {
+                locationName += address.getSubLocality() + ", ";
+            }
+            String state = address.getAdminArea();
+            String country = address.getCountryName();
+            if (state != null) {
+                locationName += state + ", ";
+            }
+            if (country != null) {
+                locationName += country;
+            }
+            locationName = locationName.trim(); // Remove trailing comma
+            locationTextView.setText(locationName);
+        } else {
+            Log.d("ReportAdapter", "Geocoder returned no addresses"); // Log for debugging
+            locationTextView.setText("Unknown Location");
         }
+    } catch (IOException e) {
+        Log.e("ReportAdapter", "Error retrieving location: " + e.getMessage()); // Log for debugging
+        locationTextView.setText("Error retrieving location");
+    }
     }
 
     @Override
@@ -69,19 +93,18 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView timestampTextView, locationTextView, descTextView, userIdTextView;
+        TextView timestampTextView, locationTextView, descTextView, userIdTextView, emoji, status;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             timestampTextView = itemView.findViewById(R.id.TVReportTime);
             locationTextView = itemView.findViewById(R.id.TVReportLocation);
             descTextView = itemView.findViewById(R.id.TVReportTitle);
-//            userIdTextView = itemView.findViewById(R.id.userIdTextView);
-//            TextView textViewReportTitle,textViewReportDate,textViewReportTime,textViewReportLocation;
-//            textViewReportTitle = itemView.findViewById(R.id.TVReportTitle);
-//            textViewReportDate = itemView.findViewById(R.id.TVReportDate);
-//            textViewReportTime = itemView.findViewById(R.id.TVReportTime);
-//            textViewReportLocation = itemView.findViewById(R.id.TVReportLocation);
+            emoji = itemView.findViewById(R.id.textView7);
+            status =itemView.findViewById(R.id.textView6);
+
         }
     }
+
+
 }

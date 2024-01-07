@@ -42,7 +42,13 @@ public class loginActivity extends AppCompatActivity {
         CheckBox rememberMeCheckBox = findViewById(R.id.checkRemember);
         String savedEmail = preferences.getString("email", null);
         String savedPassword = preferences.getString("password", null);
-        if (savedEmail != null && savedPassword != null) {
+        boolean rememberMe = preferences.getBoolean("rememberMe", false); // Default to false if not set
+        if (rememberMe && savedEmail != null && savedPassword != null) {
+            rememberMeCheckBox.setChecked(true);
+            loginUser(savedEmail, savedPassword, rememberMeCheckBox); // Pass rememberMeCheckBox as true
+        }
+
+        if (!rememberMe && savedEmail != null && savedPassword != null) {
             loginUser(savedEmail,savedPassword,rememberMeCheckBox);
         }
         singInText.setOnClickListener(new View.OnClickListener(){

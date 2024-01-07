@@ -25,12 +25,15 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
 
-    FloatingActionButton fab;
+        FloatingActionButton fab;
     DrawerLayout drawerLayout;
     BottomNavigationView bottomNavigationView;
+    private static final String TAG = "FirestoreListener";
+    private FirebaseFirestore db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,9 +76,86 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showBottomDialog();
+//                ReportFragment reportFragment = new ReportFragment();
+//                reportFragment.show(getSupportFragmentManager(), reportFragment.getTag());
+                Intent intent = new Intent(getApplicationContext(), NewUserReporting.class); // Create an Intent for the ShortsActivity
+                startActivity(intent); // Start the ShortsActivity
             }
         });
+//        NavHostFragment host = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.NHFMain);
+//        NavController navController = host.getNavController();
+//        NavigationUI.setupWithNavController(bottomNavigationView,navController);
+//
+//        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
+//            @Override
+//            public void onDestinationChanged(@NonNull NavController controller,
+//                                             @NonNull NavDestination destination, @Nullable Bundle arguments) {
+//                if(destination.getId() == R.id.SupportEmergency) {
+//                    bottomNavigationView.setVisibility(View.GONE);
+//                    bottomNavigationView.setVisibility(View.GONE);
+//                    fab.setVisibility(View.GONE);
+//                } else {
+//                    bottomNavigationView.setVisibility(View.VISIBLE);
+//                    bottomNavigationView.setVisibility(View.VISIBLE);
+//                    fab.setVisibility(View.VISIBLE);
+//                }
+//            }
+//        });
+//
+//        db = FirebaseFirestore.getInstance();
+//
+//        CollectionReference collectionReference = db.collection("report");
+//
+//        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+//            @Override
+//            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+//                if(error!=null){
+//                    Log.w(TAG, "Listen failed.", error);
+//                    return;
+//                }
+//
+//                if (value != null && !value.isEmpty()) {
+//                    for (DocumentChange dc : value.getDocumentChanges()) {
+//                        if (dc.getType() == DocumentChange.Type.ADDED) {
+//                            // Logic to handle the new document added
+//                            Object messageData = dc.getDocument().getData().get("messageField"); // Replace with the actual field name
+//                            String messageString;
+//
+//                            if (messageData instanceof String) {
+//                                messageString = (String) messageData;
+//                            } else if (messageData instanceof Number) {
+//                                messageString = String.valueOf(messageData);
+//                            } else {
+//                                // Handle other data types or provide a fallback message
+//                                messageString = "Unknown message data type";
+//                            }
+//                            // You can perform actions like showing an alert dialog here
+//                            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+//                            builder.setCancelable(true);
+//                            builder.setMessage(messageString);
+//                            builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.cancel();
+//                                }
+//                            });
+//                            builder.setPositiveButton("View", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.dismiss();
+//                                    // go to maps
+//                                }
+//                            });
+//                            if (!isDestroyed() && !isFinishing()) {
+//                                builder.show(); // Show dialog only if activity is not destroyed or finishing
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    System.out.println("No new documents in the collection.");
+//                }
+//            }
+//        });
 
     }
     private  void replaceFragment(Fragment fragment) {
@@ -122,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
 
                 dialog.dismiss();
                 Toast.makeText(MainActivity.this,"Go live is Clicked",Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), UserReporting.class); // Create an Intent for the ShortsActivity
+                Intent intent = new Intent(getApplicationContext(), NewUserReporting.class); // Create an Intent for the ShortsActivity
                 startActivity(intent); // Start the ShortsActivity
 
             }
@@ -145,4 +225,26 @@ public class MainActivity extends AppCompatActivity {
     public SharedPreferences getMyPreferences() {
         return getSharedPreferences("myPrefs", MODE_PRIVATE);
     }
+
+//    private void showGreenZone() {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setCancelable(true);
+//        builder.setTitle("Watch out ! New crimes reported.");
+//        builder.setMessage("Location : Bangsar, KL"); // get location?
+//        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.cancel();
+//            }
+//        });
+//        builder.setPositiveButton("View", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//                // go to maps
+//            }
+//        });
+//        builder.show();
+//    }
+
 }

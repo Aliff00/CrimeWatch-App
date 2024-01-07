@@ -44,6 +44,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import org.json.JSONException;
@@ -74,42 +75,26 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
     private static final float DEFAULT_ZOOM = 15f;
     private Boolean mLocationPermissionsGranted = false;
     private FusedLocationProviderClient mfusedLocationProviderClient;
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "MapReport";
     private Toolbar toolbar;
     private LinearLayout legendLayout;  // Add this line
     private List<Crime> crimeData = new ArrayList<>();
     private double currentLat = 0;
     private double currentLng = 0;
     private FirebaseFirestore db;
+    private ListenerRegistration reportListener;
     private boolean isShowingNearbyPlaces = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_map);
         FirebaseApp.initializeApp(this);
-
-        // Initialize Toolbar
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        Places.initialize(getApplicationContext(), "AIzaSyBBuX8J5JTjAMb11N1OEQizDix42NYf1VU");
-
-        crimeData.add(new Crime(37.4219999, -122.0840575, "Violent Crime"));
-        crimeData.add(new Crime(37.422, -122.083, "Property Crime"));
-
-        getLocationPermission();
-
-        // Initialize the legend
-        initLegend();
-
-        // Initialize the legend button
-        initLegendButton();  // Make sure to add this line
+        // Initialize Firestore
         db = FirebaseFirestore.getInstance();
-
         // Reference to the "report" collection
         CollectionReference reportCollectionRef = db.collection("report");
 
-// Fetch all documents from the "report" collection
+        // Fetch all documents from the "report" collection
         reportCollectionRef.get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
@@ -134,6 +119,23 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
                     Log.d(TAG, "Error: " + e.getMessage());
                 });
 
+        // Initialize Toolbar
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        Places.initialize(getApplicationContext(), "AIzaSyBBuX8J5JTjAMb11N1OEQizDix42NYf1VU");
+
+        crimeData.add(new Crime(37.4219999, -122.0840575, "Violent Crime"));
+        crimeData.add(new Crime(37.422, -122.083, "Property Crime"));
+
+        getLocationPermission();
+
+        // Initialize the legend
+        initLegend();
+
+        // Initialize the legend button
+        initLegendButton();  // Make sure to add this line
+
         ImageButton specificButton = findViewById(R.id.btnPolice); // Replace with your button's ID
         specificButton.setOnClickListener(v -> onSpecificButtonClicked());
 
@@ -142,6 +144,10 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
 
         ImageButton specificButton3 = findViewById(R.id.btnFireDepartment); // Replace with your button's ID
         specificButton3.setOnClickListener(v -> onSpecificButtonClicked3());
+
+        // Start listening for report updates
+        startReportListener();
+
     }
     private void initLegend() {
         // Reference to the legend layout
@@ -416,45 +422,6 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        int id = item.getItemId();
-//
-//        if (id == R.id.mapNone) {
-//            setMapTypeWithDelay(GoogleMap.MAP_TYPE_NONE);
-//        } else if (id == R.id.mapNormal) {
-//            setMapTypeWithDelay(GoogleMap.MAP_TYPE_NORMAL);
-//        } else if (id == R.id.mapSatellite) {
-//            setMapTypeWithDelay(GoogleMap.MAP_TYPE_SATELLITE);
-//        } else if (id == R.id.mapHybrid) {
-//            setMapTypeWithDelay(GoogleMap.MAP_TYPE_HYBRID);
-//        } else if (id == R.id.mapTerrain) {
-//            setMapTypeWithDelay(GoogleMap.MAP_TYPE_TERRAIN);
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-//
-//    private void setMapTypeWithDelay(final int mapType) {
-//        new android.os.Handler().postDelayed(
-//                () -> {
-//                    if (mMap != null) {
-//                        try {
-//                            mMap.setMapType(mapType);
-//                        } catch (Exception e) {
-//                            Log.e(TAG, "Error changing map type: " + e.getMessage());
-//                        }
-//                    }
-//                },
-//                1000 // 1 second delay, you can adjust this
-//        );
-//    }
     @Override
     public void onPoiClick(PointOfInterest poi) {
         try {
@@ -511,7 +478,7 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
                 "&radius=5000" + // specify the radius in meters
                 "&keyword=" + command +
                 "&sensor=true" +
-                "&key=" + "g10ec41c9d413455bb706aaa6b7dbea86";
+                "&key=" + getResources().getString(R.string.api_key);
         Log.d(TAG, "Url : " + url);
         Executor executor = Executors.newSingleThreadExecutor();
 
@@ -617,4 +584,58 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, DEFAULT_ZOOM));
         }
     }
+
+    private void startReportListener() {
+        try {
+            Log.d(TAG, "startReportListener: Start listening for reports");
+            FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+            CollectionReference reportsRef = fStore.collection("report");
+
+            reportsRef.get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        Toast.makeText(this, "Obtaining Report location nearby", Toast.LENGTH_LONG).show();
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            Report report = document.toObject(Report.class);
+
+                            // Log details of the report
+
+                            // Add marker for the report
+                            addReportMarker(report);
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Error fetching reports: ", e);
+                    });
+        } catch (Exception e) {
+            Log.e(TAG, "Exception in startReportListener: " + e.getMessage());
+        }
+    }
+
+
+    private void addReportMarker(Report report) {
+        // Access the GeoPoint from the report
+        GeoPoint geoPoint = report.getLocation(); // Assuming report now has a GeoPoint field
+
+        // Create a LatLng object from the GeoPoint
+        LatLng reportLocation = new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
+
+        // Add the marker to the map
+        mMap.addMarker(new MarkerOptions()
+                        .position(reportLocation)
+                        .title(report.getDesc())
+                // Customize the marker as needed
+
+        );
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Stop listening for updates when the activity is destroyed
+        if (reportListener != null) {
+            reportListener.remove();
+        }
+    }
+
+
 }
