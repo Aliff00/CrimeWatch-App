@@ -1,6 +1,7 @@
 package com.example.crimewatch;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;
@@ -45,6 +46,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
         else{
             emoji2.setText("⌛");
         }
+
         TextView status2 = holder.status;
         status2.setText(report.getStatus());
         TextView timestampTextView = holder.timestampTextView;
@@ -85,6 +87,23 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
         Log.e("ReportAdapter", "Error retrieving location: " + e.getMessage()); // Log for debugging
         locationTextView.setText("Error retrieving location");
     }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+
+
+            public
+
+            void
+
+            onClick(View view)
+
+            {
+                Intent intent = new Intent(context, MapFragment.class); // Assuming your map activity is named MapActivity
+                intent.putExtra("latitude", report.getLocation().getLatitude());
+                intent.putExtra("longitude", report.getLocation().getLongitude());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

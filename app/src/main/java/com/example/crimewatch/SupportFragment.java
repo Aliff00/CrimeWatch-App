@@ -1,5 +1,6 @@
 package com.example.crimewatch;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,6 +87,15 @@ public class SupportFragment extends Fragment {
             public void onClick(View v) {
                 // Replace the current fragment with EmergencyHotlineFragment
                 replaceFragment(new EmergencyFragment());
+            }
+        });
+
+        Button incidentHistory = view.findViewById(R.id.incidentHistory);
+        incidentHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity().getApplicationContext(), historyArchive.class);
+                startActivity(intent);
             }
         });
 

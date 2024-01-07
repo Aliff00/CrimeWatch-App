@@ -73,7 +73,7 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
-    private static final float DEFAULT_ZOOM = 15f;
+    protected static final float DEFAULT_ZOOM = 15f;
     private Boolean mLocationPermissionsGranted = false;
     private FusedLocationProviderClient mfusedLocationProviderClient;
     private static final String TAG = "MapReport";
@@ -85,11 +85,18 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
     private FirebaseFirestore db;
     private ListenerRegistration reportListener;
     private boolean isShowingNearbyPlaces = false;
+
+    boolean isReportLocation;
+    private double latitude, longitude;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_map);
         FirebaseApp.initializeApp(this);
+
+        latitude = getIntent().getDoubleExtra("latitude", 0);
+        longitude = getIntent().getDoubleExtra("longitude", 0);
+        isReportLocation = latitude != 0 && longitude != 0;
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
         // Reference to the "report" collection
@@ -125,9 +132,6 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
         setSupportActionBar(toolbar);
 
         Places.initialize(getApplicationContext(), "AIzaSyBBuX8J5JTjAMb11N1OEQizDix42NYf1VU");
-
-        crimeData.add(new Crime(37.4219999, -122.0840575, "Violent Crime"));
-        crimeData.add(new Crime(37.422, -122.083, "Property Crime"));
 
         getLocationPermission();
 
@@ -322,78 +326,84 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
         Toast.makeText(this, "Map is ready", Toast.LENGTH_SHORT).show();
         mMap = googleMap;
 
-        if (mLocationPermissionsGranted) {
-            getDeviceLocation();
+        if (isReportLocation) {
+            LatLng location = new LatLng(latitude, longitude);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, DEFAULT_ZOOM));
+        }
+        else {
+            if (mLocationPermissionsGranted) {
+                getDeviceLocation();
 
-            if (ActivityCompat.checkSelfPermission(this, FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(this, COURSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
+                if (ActivityCompat.checkSelfPermission(this, FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                        ActivityCompat.checkSelfPermission(this, COURSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                mMap.getUiSettings().setZoomControlsEnabled(true);
+                mMap.getUiSettings().setCompassEnabled(true);
+
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(@NonNull Marker marker) {
+                        marker.showInfoWindow();
+                        return true;
+                    }
+                });
+                // Set custom info window adapter
+                mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                    @Nullable
+                    @Override
+                    public View getInfoContents(@NonNull Marker marker) {
+                        return null;
+                    }
+
+                    @Override
+                    public View getInfoWindow(Marker marker) {
+                        LatLng destinationLatLng = marker.getPosition();
+                        View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_window, null); // Inflate your custom layout
+                        TextView title = infoWindow.findViewById(R.id.infoTitle);
+                        TextView lat = infoWindow.findViewById(R.id.Loclat);
+                        TextView Long = infoWindow.findViewById(R.id.LocLong);
+
+                        title.setText(marker.getTitle()); // Set the crime type as title
+                        lat.setText(Double.toString(destinationLatLng.latitude));
+                        Long.setText(Double.toString(destinationLatLng.longitude));
+
+                        // Add more information if needed
+                        return infoWindow;
+                    }
+
+                });
+                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(@NonNull Marker marker) {
+                        LatLng destinationLatLng = marker.getPosition();
+
+                        // Start Google Maps intent for directions
+                        Intent intent = new Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("http://maps.google.com/maps?daddr=" + destinationLatLng.latitude + "," + destinationLatLng.longitude)
+                        );
+                        intent.setPackage("com.google.android.apps.maps");
+                        startActivity(intent);
+                    }
+                });
+
+                for (Crime crime : crimeData) {
+                    Log.d(TAG, "Crime: " + crime.toString()); // This will print the details of each crime
+                    LatLng crimeLocation = new LatLng(crime.getLatitude(), crime.getLongitude());
+                    float markerColor = getMarkerColor(crime.getCrimeType());
+
+                    Log.d(TAG, "Adding marker: " + crime.getCrimeType() + " with color: " + markerColor);
+                    mMap.addMarker(new MarkerOptions()
+                            .position(crimeLocation)
+                            .title(crime.getCrimeType())
+                            .icon(BitmapDescriptorFactory.defaultMarker(markerColor)));
+                }
+                // Set the OnPoiClickListener here
+                mMap.setOnPoiClickListener(this);
             }
-            mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            mMap.getUiSettings().setZoomControlsEnabled(true);
-            mMap.getUiSettings().setCompassEnabled(true);
-
-            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(@NonNull Marker marker) {
-                    marker.showInfoWindow();
-                    return true;
-                }
-            });
-            // Set custom info window adapter
-            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-                @Nullable
-                @Override
-                public View getInfoContents(@NonNull Marker marker) {
-                    return null;
-                }
-
-                @Override
-                public View getInfoWindow(Marker marker) {
-                    LatLng destinationLatLng = marker.getPosition();
-                    View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_window, null); // Inflate your custom layout
-                    TextView title = infoWindow.findViewById(R.id.infoTitle);
-                    TextView lat = infoWindow.findViewById(R.id.Loclat);
-                    TextView Long = infoWindow.findViewById(R.id.LocLong);
-
-                    title.setText(marker.getTitle()); // Set the crime type as title
-                    lat.setText(Double.toString(destinationLatLng.latitude));
-                    Long.setText(Double.toString(destinationLatLng.longitude));
-
-                    // Add more information if needed
-                    return infoWindow;
-                }
-
-            });
-            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                @Override
-                public void onInfoWindowClick(@NonNull Marker marker) {
-                    LatLng destinationLatLng = marker.getPosition();
-
-                    // Start Google Maps intent for directions
-                    Intent intent = new Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse("http://maps.google.com/maps?daddr=" + destinationLatLng.latitude + "," + destinationLatLng.longitude)
-                    );
-                    intent.setPackage("com.google.android.apps.maps");
-                    startActivity(intent);
-                }
-            });
-
-            for (Crime crime : crimeData) {
-                Log.d(TAG, "Crime: " + crime.toString()); // This will print the details of each crime
-                LatLng crimeLocation = new LatLng(crime.getLatitude(), crime.getLongitude());
-                float markerColor = getMarkerColor(crime.getCrimeType());
-
-                Log.d(TAG, "Adding marker: " + crime.getCrimeType() + " with color: " + markerColor);
-                mMap.addMarker(new MarkerOptions()
-                        .position(crimeLocation)
-                        .title(crime.getCrimeType())
-                        .icon(BitmapDescriptorFactory.defaultMarker(markerColor)));
-            }
-            // Set the OnPoiClickListener here
-            mMap.setOnPoiClickListener(this);
         }
     }
 

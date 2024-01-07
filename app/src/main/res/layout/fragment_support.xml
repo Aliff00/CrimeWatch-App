@@ -55,7 +55,15 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:background="@drawable/button_border"
-            android:text="EmergencyHotline" />
+            android:text="Emergency Hotline" />
+
+        <Button
+            android:id="@+id/incidentHistory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/button_border"
+            android:text="Incident history and archive" />
 
 
 
