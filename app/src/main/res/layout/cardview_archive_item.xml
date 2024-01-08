@@ -35,17 +35,6 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/TVReportDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="92dp"
-                android:text="Date : "
-                android:textSize="15sp"
-                android:textStyle="normal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/TVReportTitle" />
-
-            <TextView
                 android:id="@+id/TVReportTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -65,7 +54,7 @@
                 android:textSize="15sp"
                 android:textStyle="normal"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/TVReportDate" />
+                app:layout_constraintTop_toBottomOf="@+id/TVReportTitle" />
 
             <TextView
                 android:id="@+id/textView6"

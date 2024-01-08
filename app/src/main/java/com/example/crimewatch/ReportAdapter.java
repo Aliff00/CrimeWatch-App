@@ -39,7 +39,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Report report = reports.get(position);
         TextView emoji2 = holder.emoji;
-        String status = "pending";
+        String status = report.getStatus();
         if(status.equalsIgnoreCase("resolved")){
             emoji2.setText("✅");
         }
@@ -52,7 +52,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
         TextView timestampTextView = holder.timestampTextView;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formattedTimestamp = sdf.format(report.getTimestamp().toDate());
-        timestampTextView.setText(formattedTimestamp);
+        timestampTextView.setText("Date and time: " +formattedTimestamp);
         TextView descTextView = holder.descTextView;
         descTextView.setText(report.getDesc());
         // Format and display location
