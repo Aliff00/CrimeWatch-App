@@ -57,10 +57,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -85,7 +89,7 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
     private FirebaseFirestore db;
     private ListenerRegistration reportListener;
     private boolean isShowingNearbyPlaces = false;
-
+    private Map<LatLng, Report> reportMap = new HashMap<>();
     boolean isReportLocation;
     private double latitude, longitude;
     @Override
@@ -362,16 +366,26 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
                     public View getInfoWindow(Marker marker) {
                         LatLng destinationLatLng = marker.getPosition();
                         View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_window, null); // Inflate your custom layout
+
                         TextView title = infoWindow.findViewById(R.id.infoTitle);
                         TextView lat = infoWindow.findViewById(R.id.Loclat);
                         TextView Long = infoWindow.findViewById(R.id.LocLong);
+                        TextView timeStamp = infoWindow.findViewById(R.id.timeStamp); // Assuming you have a TextView for the timestamp
 
-                        title.setText(marker.getTitle()); // Set the crime type as title
-                        lat.setText(Double.toString(destinationLatLng.latitude));
-                        Long.setText(Double.toString(destinationLatLng.longitude));
+                        Report report = findReportByLatLng(destinationLatLng);
 
-                        // Add more information if needed
-                        return infoWindow;
+                        if (report != null) {
+                            title.setText(report.getDesc());
+                            timeStamp.setText(formatTimestamp(report.getTimestamp()));
+                        } else {
+                            title.setText(marker.getTitle());
+                            timeStamp.setText("");
+                        }
+
+                        lat.setText(String.valueOf(destinationLatLng.latitude));
+                        Long.setText(String.valueOf(destinationLatLng.longitude));
+
+                        return infoWindow; // This should be the last line in the method
                     }
 
                 });
@@ -405,6 +419,20 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
                 mMap.setOnPoiClickListener(this);
             }
         }
+    }
+    // Method to find report by LatLng
+    private Report findReportByLatLng(LatLng latLng) {
+        return reportMap.get(latLng);
+    }
+    private String formatTimestamp(Timestamp timestamp) {
+        if (timestamp == null) return "";
+
+        // Create a Date object from the Timestamp
+        Date date = timestamp.toDate();
+
+        // Define the format you want
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy 'at' HH:mm:ss 'UTC'Z", Locale.getDefault());
+        return sdf.format(date);
     }
 
     @Override
@@ -575,7 +603,7 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
             case "fire_station":
                 return BitmapDescriptorFactory.HUE_ORANGE;   // Set the color for fire station markers
             default:
-                return BitmapDescriptorFactory.HUE_YELLOW; // Default color
+                return BitmapDescriptorFactory.HUE_RED; // Default color
         }
     }
 
@@ -618,8 +646,8 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             Report report = document.toObject(Report.class);
 
-                            // Log details of the report
-
+                            LatLng latLng = new LatLng(report.getLocation().getLatitude(), report.getLocation().getLongitude());
+                            reportMap.put(latLng, report);
                             // Add marker for the report
                             addReportMarker(report);
                         }
