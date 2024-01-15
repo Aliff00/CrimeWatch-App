@@ -1,5 +1,6 @@
 package com.example.crimewatch;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -20,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,25 +46,32 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class MainActivity extends AppCompatActivity {
-
-        FloatingActionButton fab;
+    private static final String CHANNEL_ID = "CrimeWatch";
+    private static final int RC_NOTIFICATION = 99;
+    private static final String PREF_NAME = "ReportStatusPrefs";
+    FloatingActionButton fab;
     DrawerLayout drawerLayout;
     BottomNavigationView bottomNavigationView;
-    private static final String TAG = "FirestoreListener";
-    private FirebaseFirestore db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String currentUserId = currentUser.getUid();
 
+        // Request permission for notification
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, RC_NOTIFICATION);
+        }
+
         createNotificationChannel();
 
-        CollectionReference reportRef = db.collection("report");
 
-        reportRef.whereEqualTo("user",currentUserId).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        CollectionReference reportRef = db.collection("report");
+        reportRef.whereEqualTo("user", currentUserId).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
@@ -72,12 +81,12 @@ public class MainActivity extends AppCompatActivity {
                     for (QueryDocumentSnapshot document : value) {
                         // Check if the "status" field has changed
                         String currentStatus = document.getString("status");
-                        String previousStatus = getPreviousStatus(getApplicationContext(), document.getId()); // Implement this method
+                        String previousStatus = getPreviousStatus(getApplicationContext(), document.getId());
                         if (previousStatus == null || !previousStatus.equals(currentStatus)) {
                             // Status has changed, show notification
                             showNotification(currentStatus);
                             // Update the previous status
-                            setPreviousStatus(getApplicationContext(), document.getId(), currentStatus); // Implement this method
+                            setPreviousStatus(getApplicationContext(), document.getId(), currentStatus);
                         }
                     }
                 }
@@ -87,16 +96,13 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         fab = findViewById(R.id.fab);
         drawerLayout = findViewById(R.id.drawer_layout);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        SharedPreferences preferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
-        boolean isLoggedIn = FirebaseAuth.getInstance().getCurrentUser() != null;
-        boolean rememberMeChecked = preferences.getBoolean("rememberMe", false);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,R.string.open_nav,R.string.close_nav);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open_nav, R.string.close_nav);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        if(savedInstanceState==null){
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_layout,new HomeFragment()).commit();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_layout, new HomeFragment()).commit();
 
         }
         replaceFragment(new HomeFragment());
@@ -105,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(item -> {
 
             int id = item.getItemId();
-            if(id == R.id.Home){
+            if (id == R.id.Home) {
                 replaceFragment(new HomeFragment());
             } else if (id == R.id.Maps) {
                 Intent intent = new Intent(getApplicationContext(), MapFragment.class);
@@ -118,19 +124,18 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
+        // go to Report Activity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                ReportFragment reportFragment = new ReportFragment();
-//                reportFragment.show(getSupportFragmentManager(), reportFragment.getTag());
-                Intent intent = new Intent(getApplicationContext(), NewUserReporting.class); // Create an Intent for the ShortsActivity
-                startActivity(intent); // Start the ShortsActivity
+                Intent intent = new Intent(getApplicationContext(), NewUserReporting.class); // Create an Intent for the NewUserReporting
+                startActivity(intent); // Start the NewUserReporting
             }
         });
 
     }
-    private static final String CHANNEL_ID = "CrimeWatch"; // Replace with your desired ID
 
+    // Create notification channel
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Crime";
@@ -147,8 +152,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private static final String PREF_NAME = "ReportStatusPrefs";
-
     // Get the previous status for a specific report ID
     public static String getPreviousStatus(Context context, String reportId) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -163,20 +166,11 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    // Clear the previous status for a specific report ID
-    public static void clearPreviousStatus(Context context, String reportId) {
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.remove(reportId);
-        editor.apply();
-    }
+    // Show Notification for Report Status
     private void showNotification(String current) {
-
-        // Create an explicit intent for an Activity in your app.
         Intent intent = new Intent(this, historyArchive.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
-
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.emojione_bw_1f989)
@@ -186,9 +180,8 @@ public class MainActivity extends AppCompatActivity {
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent);
 
-        // Add as notification
-        NotificationManagerCompat manager = NotificationManagerCompat.from(this);//(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+        NotificationManagerCompat manager = NotificationManagerCompat.from(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -208,65 +201,20 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    private void showBottomDialog() {
-
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.bottomsheetlayout);
-
-        LinearLayout videoLayout = dialog.findViewById(R.id.layoutVideo);
-        LinearLayout shortsLayout = dialog.findViewById(R.id.layoutShorts);
-        LinearLayout liveLayout = dialog.findViewById(R.id.layoutLive);
-        ImageView cancelButton = dialog.findViewById(R.id.cancelButton);
-
-        videoLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                dialog.dismiss();
-                Toast.makeText(MainActivity.this,"Upload a Video is clicked",Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        shortsLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                dialog.dismiss();
-                Toast.makeText(MainActivity.this,"Create a short is Clicked",Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        liveLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                dialog.dismiss();
-                Toast.makeText(MainActivity.this,"Go live is Clicked",Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), NewUserReporting.class); // Create an Intent for the ShortsActivity
-                startActivity(intent); // Start the ShortsActivity
-
-            }
-        });
-
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.show();
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-        dialog.getWindow().setGravity(Gravity.BOTTOM);
-
-    }
     public SharedPreferences getMyPreferences() {
         return getSharedPreferences("myPrefs", MODE_PRIVATE);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == RC_NOTIFICATION){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this,"Permission Granted",Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(this,"Permission Denied",Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }
