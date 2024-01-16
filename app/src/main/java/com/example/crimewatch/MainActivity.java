@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_NOTIFICATION = 99;
     private static final String PREF_NAME = "ReportStatusPrefs";
     FloatingActionButton fab;
-    BottomNavigationView bottomNavigationView;
+    public BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,11 +84,11 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         fab = findViewById(R.id.fab);
 
-        /*if (savedInstanceState == null) {
+        if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_layout, new HomeFragment()).commit();
         }
 
-        replaceFragment(new HomeFragment());*/
+        replaceFragment(new HomeFragment());
 
         bottomNavigationView.setBackground(null);
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -101,11 +101,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             } else if (id == R.id.My) {
                 replaceFragment(new MyFragment());
-            } else {
+            } else if (id == R.id.Home){
                 replaceFragment(new HomeFragment());
             }
             return true;
         });
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        bottomNavigationView.setVisibility(View.VISIBLE);
+        fab.setVisibility(View.VISIBLE);
     }
 
     // Create notification channel

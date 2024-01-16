@@ -14,7 +14,7 @@
         />
 
     <item
-        android:title="Report"/>
+        android:title=""/>
 
     <item
         android:id="@+id/Support"

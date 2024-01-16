@@ -9,18 +9,14 @@
     android:orientation="vertical"
     tools:context=".EmergencyFragment">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarEmergency"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:title="Emergency Helpline" />
-
+    <!-- RecyclerView to display emergency helpline -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/RVEmergency"
         android:layout_width="match_parent"
-        android:layout_height="505dp" />
+        android:layout_height="match_parent"
+        android:background="@color/backgroundGrey" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <!--com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,6 +31,6 @@
         app:maxImageSize="68dp"
         app:shapeAppearanceOverlay="@style/rounded"
         app:srcCompat="@drawable/baseline_sos_24"
-        app:tint="#fff2f2" />
+        app:tint="#fff2f2" /-->
 
 </LinearLayout>

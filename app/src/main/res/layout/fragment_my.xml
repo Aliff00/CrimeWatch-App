@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/backgroundGrey"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:backgroundTint="@color/colorPrimary"
     tools:context=".MyFragment">
 
     <ImageView
@@ -12,11 +13,11 @@
         android:layout_width="123dp"
         android:layout_height="100dp"
         android:layout_marginStart="125dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="68dp"
         android:layout_marginEnd="126dp"
         android:src="@drawable/pp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.285"
+        app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,14 +32,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3">
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        android:background="@color/colorPrimary">
         <Button
             android:id="@+id/myReports"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:background="@drawable/button_border"
-            android:text="My reports" />
+            android:text="My reports"
+            android:textColor="#c9b5ec"/>
         <Button
             android:id="@+id/changepass"
             android:layout_width="match_parent"
@@ -46,7 +49,8 @@
             android:layout_gravity="center"
             android:layout_marginBottom="20dp"
             android:background="@drawable/button_border"
-            android:text="Change password" />
+            android:text="Change password"
+            android:textColor="#c9b5ec"/>
 
         <Button
             android:id="@+id/privacy"
@@ -54,7 +58,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:background="@drawable/button_border"
-            android:text="Privacy" />
+            android:text="Privacy"
+            android:textColor="#c9b5ec"/>
 
         <Button
             android:id="@+id/buttonLogOut"

@@ -18,6 +18,8 @@ import androidx.fragment.app.FragmentTransaction;
  */
 public class SupportFragment extends Fragment {
 
+    public MainActivity main;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -65,12 +67,15 @@ public class SupportFragment extends Fragment {
 
         Button feedboardButton = view.findViewById(R.id.feedboard);
         Button safetyTipsButton = view.findViewById(R.id.SafetyTipsBoard);
-        Button emergencyHotlineButton = view.findViewById(R.id.EmergencyHotline);
+        Button emergencyHotlineButton = view.findViewById(R.id.EmergencyHelpline);
+        main = (MainActivity) getActivity();
         feedboardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Replace the current fragment with FeedboardFragment
                 replaceFragment(new NewsFragment());
+                main.bottomNavigationView.setVisibility(View.GONE);
+                main.fab.setVisibility(View.GONE);
             }
         });
 
@@ -79,6 +84,8 @@ public class SupportFragment extends Fragment {
             public void onClick(View v) {
                 // Replace the current fragment with SafetyTipsFragment
                 replaceFragment(new SafetyTipsFragment());
+                main.bottomNavigationView.setVisibility(View.GONE);
+                main.fab.setVisibility(View.GONE);
             }
         });
         emergencyHotlineButton.setOnClickListener(new View.OnClickListener() {
@@ -86,8 +93,13 @@ public class SupportFragment extends Fragment {
             public void onClick(View v) {
                 // Replace the current fragment with EmergencyHotlineFragment
                 replaceFragment(new EmergencyFragment());
+                main.bottomNavigationView.setVisibility(View.GONE);
+                main.fab.setVisibility(View.GONE);
             }
         });
+
+        main.bottomNavigationView.setVisibility(View.VISIBLE);
+        main.fab.setVisibility(View.VISIBLE);
 
         Button incidentHistory = view.findViewById(R.id.incidentHistory);
         incidentHistory.setOnClickListener(new View.OnClickListener() {

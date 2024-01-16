@@ -30,7 +30,7 @@ public class EmergencyFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private EmergencyAdapter adapter;
-    private FloatingActionButton fab;
+    //private FloatingActionButton fab;
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -103,7 +103,7 @@ public class EmergencyFragment extends Fragment {
 
     }
 
-
+/*
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -121,6 +121,6 @@ public class EmergencyFragment extends Fragment {
                 startActivity(phone_intent);
             }
         });
-    }
+    }*/
 
 }
