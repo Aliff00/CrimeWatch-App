@@ -1,11 +1,9 @@
-package com.example.crimewatch;
+package com.example.crimewatch.adapter;
 
 import android.annotation.SuppressLint;
-import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -13,19 +11,22 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.crimewatch.data.Contact;
+import com.example.crimewatch.R;
+
 import java.util.List;
 
 public class EmergencyAdapter extends RecyclerView.Adapter<EmergencyAdapter.MyViewHolder> {
-    private static List<ContactModel> dataList;
+    private static List<Contact> dataList;
     private static OnItemClickListener onItemClickListener;
     private int mExpandedPosition = -1;
     private int previousExpandedPosition = -1;
 
     public interface OnItemClickListener {
-        void onItemClick(ContactModel item);
+        void onItemClick(Contact item);
     }
 
-    public EmergencyAdapter(List<ContactModel> dataList, OnItemClickListener onItemClickListener) {
+    public EmergencyAdapter(List<Contact> dataList, OnItemClickListener onItemClickListener) {
 
         this.dataList = dataList;
         this.onItemClickListener = onItemClickListener;
@@ -40,7 +41,7 @@ public class EmergencyAdapter extends RecyclerView.Adapter<EmergencyAdapter.MyVi
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        ContactModel item = dataList.get(position);
+        Contact item = dataList.get(position);
         holder.textViewTitle.setText(item.getName());
         holder.textViewPhoneNumber.setText(item.getPhoneNo());
         holder.textViewDesc.setText(item.getDesc());

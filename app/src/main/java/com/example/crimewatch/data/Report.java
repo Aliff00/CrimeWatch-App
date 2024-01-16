@@ -1,4 +1,4 @@
-package com.example.crimewatch;
+package com.example.crimewatch.data;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;

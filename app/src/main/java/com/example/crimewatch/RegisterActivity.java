@@ -26,7 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class registerActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
     TextView editTextEmail, editTextPassword, singInText, editFullName, editNRIC, editConfirmPassword;
@@ -69,29 +69,29 @@ public class registerActivity extends AppCompatActivity {
                 fStore = FirebaseFirestore.getInstance();
 
                 if(TextUtils.isEmpty(email)){
-                    Toast.makeText(registerActivity.this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if(TextUtils.isEmpty(password)){
-                    Toast.makeText(registerActivity.this, "Please enter a valid password", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Please enter a valid password", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (nric.length() != 12 || !TextUtils.isDigitsOnly(nric)) {
-                    Toast.makeText(registerActivity.this, "Please enter a valid 12-digit NRIC.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Please enter a valid 12-digit NRIC.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$";
 
                 if (password.length() < 8 || !password.matches(PASSWORD_REGEX)) {
-                    Toast.makeText(registerActivity.this, "Strong password required: 8+ chars, mix case & numbers.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Strong password required: 8+ chars, mix case & numbers.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (!password.equals(conPass)){
-                    Toast.makeText(registerActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -112,7 +112,7 @@ public class registerActivity extends AppCompatActivity {
                                         }
                                     });
                                     progressBar.setVisibility(View.GONE);
-                                    Toast.makeText(registerActivity.this, "Account created.",
+                                    Toast.makeText(RegisterActivity.this, "Account created.",
                                             Toast.LENGTH_SHORT).show();
                                     Intent intent2= new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent2);
@@ -120,7 +120,7 @@ public class registerActivity extends AppCompatActivity {
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     progressBar.setVisibility(View.GONE);
-                                    Toast.makeText(registerActivity.this, "Authentication failed.",
+                                    Toast.makeText(RegisterActivity.this, "Authentication failed.",
                                             Toast.LENGTH_SHORT).show();
                                 }
                             }

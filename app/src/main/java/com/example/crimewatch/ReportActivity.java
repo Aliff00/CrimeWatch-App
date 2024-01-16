@@ -68,7 +68,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class NewUserReporting extends AppCompatActivity implements OnMapReadyCallback {
+public class ReportActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private EditText editTextDate, editTextTime, editTextIncident;
     private TextView editTextLocation;
@@ -76,7 +76,7 @@ public class NewUserReporting extends AppCompatActivity implements OnMapReadyCal
     private Calendar calendar;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_PICK_IMAGE = 2;
-    private static final String TAG = "NewUserReporting";
+    private static final String TAG = "ReportActivity";
     private boolean photoTaken = false;
     private SupportMapFragment mapFragment;
     private GoogleMap gMap;
@@ -125,7 +125,7 @@ public class NewUserReporting extends AppCompatActivity implements OnMapReadyCal
                 if (mapFragment != null) {
                     fl.setVisibility(View.VISIBLE);
 
-                    mapFragment.getMapAsync(NewUserReporting.this); // Get the map within the listener
+                    mapFragment.getMapAsync(ReportActivity.this); // Get the map within the listener
                     init();
                 }
 
@@ -182,14 +182,14 @@ public class NewUserReporting extends AppCompatActivity implements OnMapReadyCal
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
                                     String documentID = documentReference.getId();
-                                    Toast.makeText(NewUserReporting.this, "Report successfully sent!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ReportActivity.this, "Report successfully sent!", Toast.LENGTH_SHORT).show();
                                     uploadImage(selectedImageUri,documentID, documentReference);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull @NotNull Exception e) {
 
-                                    Toast.makeText(NewUserReporting.this, "Report failed to send.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ReportActivity.this, "Report failed to send.", Toast.LENGTH_SHORT).show();
 
 
                                 }
@@ -197,7 +197,7 @@ public class NewUserReporting extends AppCompatActivity implements OnMapReadyCal
                 }catch (ParseException e) {
                     // Handle parsing errors
                     e.printStackTrace();
-                    Toast.makeText(NewUserReporting.this, "Error parsing date or time", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ReportActivity.this, "Error parsing date or time", Toast.LENGTH_SHORT).show();
                 }
             }
              else {
@@ -414,7 +414,7 @@ public class NewUserReporting extends AppCompatActivity implements OnMapReadyCal
                         .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Toast.makeText(NewUserReporting.this, "Image uploaded successfully!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ReportActivity.this, "Image uploaded successfully!", Toast.LENGTH_SHORT).show();
                                 // Get the download URL of the uploaded image
                                 Task<Uri> downloadUrlTask = taskSnapshot.getStorage().getDownloadUrl();
                                 downloadUrlTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -429,14 +429,14 @@ public class NewUserReporting extends AppCompatActivity implements OnMapReadyCal
                                                             @Override
                                                             public void onSuccess(Void aVoid) {
                                                                 // Image URL stored successfully
-                                                                Log.d("NewUserReporting", "Image URL stored in report");
+                                                                Log.d("ReportActivity", "Image URL stored in report");
                                                             }
                                                         })
                                                         .addOnFailureListener(new OnFailureListener() {
                                                             @Override
                                                             public void onFailure(@NonNull Exception e) {
                                                                 // Handle error storing image URL
-                                                                Log.e("NewUserReporting", "Error storing image URL", e);
+                                                                Log.e("ReportActivity", "Error storing image URL", e);
                                                             }
                                                         });
                                     }
@@ -447,17 +447,17 @@ public class NewUserReporting extends AppCompatActivity implements OnMapReadyCal
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(NewUserReporting.this, "Image upload failed.", Toast.LENGTH_SHORT).show();
-                                Log.d("NewUserReporting", "Image upload failed");
+                                Toast.makeText(ReportActivity.this, "Image upload failed.", Toast.LENGTH_SHORT).show();
+                                Log.d("ReportActivity", "Image upload failed");
                             }
                         });
             }
          else {
-            Toast.makeText(NewUserReporting.this, "No image selected.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ReportActivity.this, "No image selected.", Toast.LENGTH_SHORT).show();
         }}
         else {
             // Handle the case where the user is not signed in
-            Toast.makeText(NewUserReporting.this, "User is not signed in.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ReportActivity.this, "User is not signed in.", Toast.LENGTH_SHORT).show();
         }
     }
 

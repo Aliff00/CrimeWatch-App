@@ -1,8 +1,8 @@
-package com.example.crimewatch;
+package com.example.crimewatch.data;
 
 import java.io.Serializable;
 
-public class ContactModel implements Serializable {
+public class Contact implements Serializable {
     //class to hold data of contact - name and phone number
     private String phoneNo;
     private String name;
@@ -11,13 +11,13 @@ public class ContactModel implements Serializable {
     private int imageResourceId;
 
     // constructor
-    public ContactModel(){
+    public Contact(){
 
     }
     public interface OnItemClickListener {
-        void onItemClick(ContactModel contactModel);
+        void onItemClick(Contact contact);
     }
-    public ContactModel(String name, String phoneNo, String desc, int imageResourceId) {
+    public Contact(String name, String phoneNo, String desc, int imageResourceId) {
         this.phoneNo = phoneNo;
         this.name = name;
         this.desc= desc;

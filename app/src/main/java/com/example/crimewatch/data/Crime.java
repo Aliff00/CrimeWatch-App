@@ -1,4 +1,4 @@
-package com.example.crimewatch;
+package com.example.crimewatch.data;
 
 public class Crime {
     private double latitude;

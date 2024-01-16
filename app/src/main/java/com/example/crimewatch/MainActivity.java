@@ -109,8 +109,8 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), NewUserReporting.class); // Create an Intent for the NewUserReporting
-                startActivity(intent); // Start the NewUserReporting
+                Intent intent = new Intent(getApplicationContext(), ReportActivity.class); // Create an Intent for the ReportActivity
+                startActivity(intent); // Start the ReportActivity
             }
         });
 

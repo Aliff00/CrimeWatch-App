@@ -11,11 +11,6 @@
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
     <fragment
-        android:id="@+id/DestMaps"
-        android:name="com.example.crimewatch.MapsFragment"
-        android:label="fragment_maps"
-        tools:layout="@layout/fragment_maps" />
-    <fragment
         android:id="@+id/DestReport"
         android:name="com.example.crimewatch.ReportFragment"
         android:label="fragment_report"

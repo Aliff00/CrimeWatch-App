@@ -1,4 +1,4 @@
-package com.example.crimewatch;
+package com.example.crimewatch.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.crimewatch.MapFragment;
+import com.example.crimewatch.R;
+import com.example.crimewatch.data.Report;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
