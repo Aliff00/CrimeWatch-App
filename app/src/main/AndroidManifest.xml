@@ -34,10 +34,10 @@
             android:name=".NewUserReporting"
             android:exported="false" />
         <activity
-            android:name=".historyArchive"
+            android:name=".HistoryArchiveActivity"
             android:exported="false" />
         <activity
-            android:name=".StatusUpdate"
+            android:name=".StatusUpdateActivity"
             android:exported="false" />
         <activity
             android:name=".ForgotPasswordActivity"
@@ -50,7 +50,7 @@
             android:exported="false"
             android:theme="@style/Theme.Material3.Dark.NoActionBar" />
         <activity
-            android:name=".loginActivity"
+            android:name=".LoginActivity"
             android:exported="true"
             android:theme="@style/Theme.Material3.Dark.NoActionBar">
             <intent-filter>
@@ -68,13 +68,6 @@
             android:name=".MapFragment"
             android:exported="true" />
 
-        <service
-            android:name=".MyFirebaseMessaging"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
     </application>
 
 </manifest>

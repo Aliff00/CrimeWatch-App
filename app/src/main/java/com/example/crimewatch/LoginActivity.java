@@ -31,7 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class loginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     ProgressBar progressBar2;
     private SharedPreferences preferences;
@@ -115,12 +115,12 @@ public class loginActivity extends AppCompatActivity {
                 password = editPassword.getText().toString();
 
                 if (TextUtils.isEmpty(email)){
-                    Toast.makeText(loginActivity.this, "Enter an email", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Enter an email", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (TextUtils.isEmpty(password)){
-                    Toast.makeText(loginActivity.this, "Enter a password", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Enter a password", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -144,7 +144,7 @@ public class loginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressBar2.setVisibility(View.GONE);
                         if (task.isSuccessful()) {
-                            Toast.makeText(loginActivity.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
                             Intent intent2 = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent2);
                             finish();
@@ -158,7 +158,7 @@ public class loginActivity extends AppCompatActivity {
                                 preferences.edit().clear().apply();
                             }
                         } else {
-                            Toast.makeText(loginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

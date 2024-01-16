@@ -114,7 +114,6 @@ public class HomeFragment extends Fragment {
         } else {
             // Permission already granted, start location updates
             startLocationUpdates();
-
         }
 
         // Get the current date and time with days

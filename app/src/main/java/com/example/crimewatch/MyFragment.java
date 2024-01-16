@@ -82,7 +82,6 @@ public class MyFragment extends Fragment {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             String currentUserId = currentUser.getUid();
-
             // Fetch the fullName from the 'users' collection in Firestore
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             DocumentReference userDocRef = db.collection("users").document(currentUserId);
@@ -115,7 +114,7 @@ public class MyFragment extends Fragment {
         statusUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity().getApplicationContext(), StatusUpdate.class);
+                Intent intent = new Intent(getActivity().getApplicationContext(), StatusUpdateActivity.class);
                 startActivity(intent);
             }
         });
@@ -134,22 +133,15 @@ public class MyFragment extends Fragment {
                 startActivity(browserIntent);
             }
         });
-
-
-
-
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SharedPreferences preferences = ((MainActivity) getActivity()).getMyPreferences();
                 preferences.edit().clear().apply();
-
-
                 // Sign out from Firebase
                 FirebaseAuth.getInstance().signOut();
-
                 // Navigate to login activity
-                Intent intent = new Intent(getActivity().getApplicationContext(), loginActivity.class);
+                Intent intent = new Intent(getActivity().getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
             }
         });

@@ -29,7 +29,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class historyArchive extends AppCompatActivity  {
+public class HistoryArchiveActivity extends AppCompatActivity  {
     private LocationManager locationManager;
     private static final String FINE_LOCATION = android.Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -83,14 +83,14 @@ public class historyArchive extends AppCompatActivity  {
                             }
 
                             // Set adapter for RecyclerView
-                            ReportAdapter adapter = new ReportAdapter(historyArchive.this, reports);
+                            ReportAdapter adapter = new ReportAdapter(HistoryArchiveActivity.this, reports);
                             recyclerView.setAdapter(adapter);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(historyArchive.this, "Error fetching reports", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(HistoryArchiveActivity.this, "Error fetching reports", Toast.LENGTH_SHORT).show();
                             Log.w("TAG", "Error fetching reports: ", e);
                         }
                     });

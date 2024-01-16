@@ -81,7 +81,6 @@ public class SupportFragment extends Fragment {
                 replaceFragment(new SafetyTipsFragment());
             }
         });
-
         emergencyHotlineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,7 +93,7 @@ public class SupportFragment extends Fragment {
         incidentHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity().getApplicationContext(), historyArchive.class);
+                Intent intent = new Intent(getActivity().getApplicationContext(), HistoryArchiveActivity.class);
                 startActivity(intent);
             }
         });

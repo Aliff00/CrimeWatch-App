@@ -22,7 +22,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StatusUpdate extends AppCompatActivity {
+public class StatusUpdateActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private List<Report> reports = new ArrayList<>();
@@ -61,14 +61,14 @@ public class StatusUpdate extends AppCompatActivity {
                             }
 
                             // Set adapter for RecyclerView
-                            ReportAdapter adapter = new ReportAdapter(StatusUpdate.this, reports);
+                            ReportAdapter adapter = new ReportAdapter(StatusUpdateActivity.this, reports);
                             recyclerView.setAdapter(adapter);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(StatusUpdate.this, "Error fetching reports", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(StatusUpdateActivity.this, "Error fetching reports", Toast.LENGTH_SHORT).show();
                             Log.w("TAG", "Error fetching reports: ", e);
                         }
                     });
