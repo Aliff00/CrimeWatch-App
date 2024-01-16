@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
         createNotificationChannel();
 
-
+        // Fetch updated status data from Firebase Firestore
         CollectionReference reportRef = db.collection("report");
         reportRef.whereEqualTo("user", currentUserId).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -103,23 +103,23 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_layout, new HomeFragment()).commit();
-
         }
+
         replaceFragment(new HomeFragment());
 
         bottomNavigationView.setBackground(null);
         bottomNavigationView.setOnItemSelectedListener(item -> {
 
             int id = item.getItemId();
-            if (id == R.id.Home) {
-                replaceFragment(new HomeFragment());
+            if (id == R.id.Support) {
+                replaceFragment(new SupportFragment());
             } else if (id == R.id.Maps) {
                 Intent intent = new Intent(getApplicationContext(), MapFragment.class);
                 startActivity(intent);
             } else if (id == R.id.My) {
                 replaceFragment(new MyFragment());
             } else {
-                replaceFragment(new SupportFragment());
+                replaceFragment(new HomeFragment());
             }
             return true;
         });
