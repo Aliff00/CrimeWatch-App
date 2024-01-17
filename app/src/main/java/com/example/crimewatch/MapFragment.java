@@ -22,8 +22,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.example.crimewatch.data.Crime;
-import com.example.crimewatch.data.Report;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -59,6 +57,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,7 +71,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class MapFragment extends AppCompatActivity implements OnMapReadyCallback , GoogleMap.OnPoiClickListener {
+public class MapFragment extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -372,7 +371,6 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
                         TextView lat = infoWindow.findViewById(R.id.Loclat);
                         TextView Long = infoWindow.findViewById(R.id.LocLong);
                         TextView timeStamp = infoWindow.findViewById(R.id.timeStamp); // Assuming you have a TextView for the timestamp
-
                         Report report = findReportByLatLng(destinationLatLng);
 
                         if (report != null) {
@@ -416,8 +414,7 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
                             .title(crime.getCrimeType())
                             .icon(BitmapDescriptorFactory.defaultMarker(markerColor)));
                 }
-                // Set the OnPoiClickListener here
-                mMap.setOnPoiClickListener(this);
+
             }
         }
     }
@@ -462,18 +459,8 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    @Override
-    public void onPoiClick(PointOfInterest poi) {
-        try {
-            Toast.makeText(this, "Clicked: " +
-                            poi.name + "\nPlace ID:" + poi.placeId +
-                            "\nLatitude:" + poi.latLng.latitude +
-                            " Longitude:" + poi.latLng.longitude,
-                    Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Log.e(TAG, "Error handling POI click: " + e.getMessage());
-        }
-    }
+
+
     private void parseResult(String data, String placeType) {
         try {
             JSONObject object = new JSONObject(data);
@@ -675,7 +662,7 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions()
                 .position(reportLocation)
                 .title(report.getDesc())
-                .icon(markerIcon)  // Set the marker icon to the purple color
+                .icon(markerIcon)// Set the marker icon to the purple color
         );
     }
 
